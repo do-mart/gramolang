@@ -1,9 +1,7 @@
 """
 Chat or conversation class
 
-TODO: Implement optional loging in the agent class?
 TODO: Also, uniformize the SYMBOLS match sequences (e.g. ESCAPE_CHAT, TOP_P, etc.)
-TODO: Enum for API group (e.g. Anthropic vs ChatGPT)
 
 Terminology:
 Role: role of a message (e.g. user, human, system, assistant)

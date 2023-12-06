@@ -1,5 +1,5 @@
 """
-Common functionalities for text command interface
+Text command interface
 
 TODO: Find better name for the command type/categories
 """

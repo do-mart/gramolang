@@ -1,6 +1,8 @@
-"""Functionalities for more automatic completions"""
+"""
+Even more automatic completions
 
-from enum import unique, StrEnum
+"""
+
 from logging import getLogger
 
 from pathlib import Path
@@ -29,8 +31,6 @@ PRINT_NEW_ERRORS_STATUS = False     # Print status if new error
 module_logger = getLogger(__name__)
 
 
-# TODO Write complete_file to be callable directly with multiple types of files
-
 def validate(file_type: FileType):
     if file_type in (FileType.TEXT, FileType.CSV):
         raise Exception(f"{file_type.value} file not supported for now.")
@@ -50,7 +50,7 @@ def complete_file(
     start = datetime.now()
     logger = module_logger.getChild(complete_file.__name__)
 
-    file_type = FileType.from_extension(path.suffix)
+    file_type = FileType.from_path(path)
     validate(file_type)
     logger.info(
         f"File type for extension '{path.suffix}'{rmark(file_id)}: "
@@ -110,31 +110,22 @@ def pool_files(
         ...
     """
 
-    print(
-        f"TODO: Rethink validation, processing and postprocessing "
-        f"for using complete_file() and complete_remove_file().")
-    print(f"E.g. perhaps delete cached file while cleaning returned futures.")
-    return
-
     # Logging
     logger = module_logger.getChild(pool_files.__name__)
 
     # Test for valid files for chat completion
-    def valid_entry(path: Path, dir_name: str):
-        if not path.is_file():
+    def valid_file(path: Path, dir_name: str):
+        try:
+            validate(FileType.from_path(path))
+            return True
+        except Exception:
             logger.warning(
-                f"Entry {repr(path.name)} is not a file, "
-                f"please remove from {dir_name} directory.")
+                f"Invalid file or file type, "
+                f"please remove entry '{path.name}' from {dir_name} directory.")
             return False
-        if EXTENSION_TO_FILETYPE.get(path.suffix) is not FileType.EXCEL:
-            logger.warning(
-                f"Extension of file {repr(path.name)} is not '.xlsx', "
-                f"please remove from {dir_name} directory.")
-            return False
-        return True
 
     # Start message
-    # TODO Find better logic for printing datetime
+    # TODO Better logic for printing datetime?
     logger.info(datetime.now().strftime('%c'))
     logger.info("Starting file watch pool for chat completion.")
 
@@ -169,7 +160,7 @@ def pool_files(
         if RELOAD_CACHE:
             logger.info("Add old files to the list of pool files.")
             for entry_name in cache_entries:
-                if valid_entry(cache_dir/entry_name, 'cache'):
+                if valid_file(cache_dir/entry_name, 'cache'):
                     pool_filenames.append((entry_name, entry_name))
 
     # Idle delay
@@ -222,7 +213,7 @@ def pool_files(
                 if entry_name in prev_invalid_entry_names:
                     invalid_entry_names.add(entry_name)
                     continue
-                if not valid_entry(entry_path, 'input'):
+                if not valid_file(entry_path, 'input'):
                     invalid_entry_names.add(entry_name)
                     continue
 
@@ -243,13 +234,11 @@ def pool_files(
                 logger.info(f"Pooling file '{filename[0]}' as {new_name}")
                 future = executor.submit(
                     complete_remove_file,
-                    workbook_path=cache_dir / filename[1],
-                    new_workbook_path=out_dir / filename[1],
+                    path=cache_dir / filename[1], new_path=out_dir / filename[1],
                     file_id=file_id,
                     api_keys=api_keys, api_key_files=api_key_files,
-                    model=model,
-                    max_conversations=max_conversations,
-                    timeout=timeout, retries=retries)
+                    model=model, timeout=timeout, retries=retries,
+                    max_conversations=max_conversations)
                 future_names[future] = new_name
             pool_filenames.clear()
 

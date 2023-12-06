@@ -1,6 +1,6 @@
-"""Wrapper of APIs
+"""
+Wrapper of APIs: Abstraction layer over each organization's API
 
-Abstraction over APIs of each organization
 """
 
 from typing import Any, Sequence
@@ -98,7 +98,7 @@ class OpenAIAPIWrapper(APIWrapper):
 
 
 class AnthropicAPIWrapper(APIWrapper):
-    """Open AI's API wrapper"""
+    """Anthropic's API wrapper"""
 
     API_KEY_NAME: str = 'OPENAI_API_KEY'
     MODELS = {'claude', 'claude2'}

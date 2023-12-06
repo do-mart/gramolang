@@ -1,5 +1,5 @@
 """
-Common functionalities
+Common functionalities for multiple modules
 """
 
 from typing import Sequence, NamedTuple
@@ -74,11 +74,18 @@ class FileType(str, Enum):
     EXCEL = ('Excel', {'.xlsx', '.xls'})
 
     @classmethod
-    def from_extension(cls, value: str):
-        try: return cls._extensions[value]
+    def from_extension(cls, extension: str):
+        try: return cls._extensions[extension]
         except KeyError:
             raise Exception(
-                f"Invalid extension: '{value}' don't map to a file type.")
+                f"Invalid extension: '{extension}' don't map to a file type.")
+
+    @classmethod
+    def from_path(cls, path: Path):
+        if not path.is_file():
+            raise FileNotFoundError(f"Invalid path: '{path}' is not a file.'")
+        return cls.from_extension(path.suffix)
+
 
 # DEPRECATED
 # FILETYPE_TO_EXTENSIONS: dict[FileType: tuple[str]] = {

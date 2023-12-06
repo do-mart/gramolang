@@ -21,7 +21,7 @@ MAX_CONVERSATIONS = None    # Max. concurrent conversations for each file (None 
 TIMEOUT = 2 * 60            # Max. time in seconds for one chat completion
 RETRIES = 4                 # Number of times to retries if rate limit is reached
 
-LOG_LEVEL = DEBUG
+LOG_LEVEL = INFO
 
 
 # Pool name
@@ -38,7 +38,7 @@ if LOG_LEVEL is DEBUG:
         # format='%(asctime)s [%(name)s] %(message)s',
         format='%(asctime)s [%(module)s][%(name)s] %(message)s')
 else:
-    basicConfig(format='%(asctime)s %(message)s', datefmt='%X')
+    basicConfig(format='%(message)s', datefmt='%X')
 
 # Start pool
 print("\nStart pool...\n")

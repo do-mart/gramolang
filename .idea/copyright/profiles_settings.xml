@@ -1,0 +1,10 @@
+<component name="CopyrightManager">
+  <settings default="Dominic Martin - Simple">
+    <module2copyright>
+      <element module="Project Files" copyright="Dominic Martin - Simple" />
+    </module2copyright>
+    <LanguageOptions name="Python">
+      <option name="block" value="false" />
+    </LanguageOptions>
+  </settings>
+</component>
