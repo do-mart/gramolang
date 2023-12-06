@@ -1,0 +1,48 @@
+#! python3
+
+from logging import getLogger, basicConfig, INFO, DEBUG
+from pathlib import Path
+from sys import argv
+
+from gramolang.wrapi import OpenAIAPIWrapper
+from gramolang.auto import complete_file
+
+
+# API key, client and model
+api_key_files = {OpenAIAPIWrapper: Path.home()/'.mz/openai-api-key-uqam'}
+
+# Settings
+MODEL = 'gpt-3.5-turbo'     # Default model
+TIMEOUT = 2 * 60            # Max. time in seconds for one chat completion
+RETRIES = 4                 # Number of times to retries if rate limit is reached
+MAX_CONVERSATIONS = None    # Max. concurrent conversations for each file (None for default)
+
+LOG_LEVEL = INFO            # Logging level
+
+# Logging
+getLogger('gramolang').setLevel(LOG_LEVEL)
+if LOG_LEVEL is DEBUG:
+    basicConfig(
+        # format='%(asctime)s [%(name)s] %(message)s',
+        format='%(asctime)s [%(module)s][%(name)s] %(message)s')
+else:
+    basicConfig(format='%(message)s', datefmt='%X')
+
+# Process command line arguments
+if len(argv) == 1:
+    print("Missing 1 required argument: file path")
+    exit(1)
+if len(argv) > 3:
+    print(
+        f"Too many command line arguments: "
+        f"{len(argv) - 1} provided and 2 allowed.")
+    exit(1)
+
+# Call
+try: complete_file(
+    path=Path(argv[1]), new_path=Path(argv[2]) if len(argv) == 3 else None,
+    api_key_files=api_key_files, model=MODEL,
+    timeout=TIMEOUT, retries=RETRIES, max_conversations=MAX_CONVERSATIONS)
+except Exception as e:
+    print(e)
+    exit(1)

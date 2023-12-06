@@ -1,0 +1,17 @@
+#! python3
+"""Executable for interactive console"""
+
+from pathlib import Path
+
+from gramolang.wrapi import OpenAIAPIWrapper
+from gramolang.console import Console
+
+
+# API key, client and model
+api_key_files = {OpenAIAPIWrapper: Path.home()/'.mz/openai-api-key-uqam'}
+MODEL = 'gpt-4'
+
+# Create and start console
+console = Console(api_key_files=api_key_files)
+console.model(MODEL)
+console.run()
