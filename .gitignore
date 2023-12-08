@@ -1,4 +1,5 @@
 .gitignore
 .idea/
 archive/
+exclude/
 perso/
