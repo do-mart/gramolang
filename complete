@@ -1,4 +1,5 @@
 #! python3
+"""Executable for gramolang.complete()"""
 
 from logging import getLogger, basicConfig, INFO, DEBUG
 from pathlib import Path

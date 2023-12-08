@@ -1,3 +1,5 @@
+"""Print OpenAI models based on API key"""
+
 from pathlib import Path
 from datetime import datetime
 from tabulate import tabulate
