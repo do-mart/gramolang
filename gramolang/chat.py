@@ -3,7 +3,7 @@ Chat or conversation class
 
 Terminology:
 Role: role of a message (e.g. user, human, system, assistant)
-Content: content of one message
+Content: content of a message
 Message: NamedTuple with message role and content
 Assistant message: Message with assistant role
 Completion: NamedTuple with choice, request and response instances
