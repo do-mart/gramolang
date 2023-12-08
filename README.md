@@ -1,2 +1,2 @@
 # gramolang
-# Bla
+Python package for large language models
