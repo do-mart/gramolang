@@ -9,23 +9,21 @@ from gramolang import OpenAIAPIWrapper
 from gramolang.auto import complete_file
 
 
-# API key, client and model
+# API keys
 api_key_files = {
     OpenAIAPIWrapper: Path(__file__).parent / '.keys' / 'openai-api-key-uqam'}
 
 # Settings
 MODEL = 'gpt-3.5-turbo'     # Default model
 TIMEOUT = 2 * 60            # Max. time in seconds for one chat completion
-RETRIES = 4                 # Number of times to retries if rate limit is reached
+RETRIES = 4                 # Number of times to retries on timeout or rate limit
 MAX_CONVERSATIONS = None    # Max. concurrent conversations for each file (None for default)
-
-LOG_LEVEL = INFO            # Logging level
+LOG_LEVEL = INFO            # Logging level (must import from logging)
 
 # Logging
 getLogger('gramolang').setLevel(LOG_LEVEL)
 if LOG_LEVEL is DEBUG:
     basicConfig(
-        # format='%(asctime)s [%(name)s] %(message)s',
         format='%(asctime)s [%(module)s][%(name)s] %(message)s')
 else:
     basicConfig(format='%(message)s', datefmt='%X')

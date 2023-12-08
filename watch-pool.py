@@ -12,23 +12,20 @@ api_key_files = {
     OpenAIAPIWrapper: Path(__file__).parent / '.keys' / 'openai-api-key-uqam'}
 
 # Settings
-POOL_DIR = Path(__file__).parent / Path(__file__).stem
-
-STATUS_DELAY = 60 * 60      # Delay in seconds for printing pool status
-
 MODEL = 'gpt-3.5-turbo'     # Default model
 MAX_FILES = None            # Maximum number of concurrent files (None for default)
 MAX_CONVERSATIONS = None    # Max. concurrent conversations for each file (None for default)
 TIMEOUT = 2 * 60            # Max. time in seconds for one chat completion
-RETRIES = 4                 # Number of times to retries if rate limit is reached
+RETRIES = 4                 # Number of times to retries on timeout or rate limit
+STATUS_DELAY = 60 * 60      # Delay in seconds for printing pool status
+LOG_LEVEL = INFO            # Logging level (import from logging)
 
-LOG_LEVEL = INFO            # Logging level (must be imported from logging)
+POOL_DIR = Path(__file__).parent / Path(__file__).stem
 
 # Logging
 getLogger('gramolang').setLevel(LOG_LEVEL)
 if LOG_LEVEL is DEBUG:
     basicConfig(
-        # format='%(asctime)s [%(name)s] %(message)s',
         format='%(asctime)s [%(module)s][%(name)s] %(message)s')
 else:
     basicConfig(format='%(message)s', datefmt='%X')
