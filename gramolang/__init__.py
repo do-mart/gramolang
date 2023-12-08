@@ -17,10 +17,10 @@ module_logger = getLogger(__name__)
 NAME = 'Gramolang'
 
 VERSIONS: dict[str:str] = {
-    '0.4': """Logs starts here with new console class and simplified chat class""",
+    '0.4': """Log starts here with new console class and simplified chat class""",
     '0.4.1': """Implementation of Role enum, and Message and Completion NamedTuples""",
     '0.5': """Integrations of OpenAI API ver. 1.x""",
-    '0.6': """New wrapi (wrapper of APIs) layer for abstraction over different APIs"""
+    '0.6': """New wraipi (wrapper of APIs) layer of abstraction over different APIs"""
 }
 VERSION = list(VERSIONS)[-1]
 

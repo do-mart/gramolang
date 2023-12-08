@@ -24,9 +24,6 @@ CACHE_DIR_NAME = '.cache'       # Cache directory
 RELOAD_CACHE = True             # Files still in the cache are reloaded in the pool
 IGNORE_DOT_FILE = True          # Ignore system dot (.) files
 
-PRINT_NEW_FILES_STATUS = False      # Print status if new file
-PRINT_NEW_ERRORS_STATUS = False     # Print status if new error
-
 # Logging
 module_logger = getLogger(__name__)
 
@@ -100,8 +97,6 @@ def watch_pool_files(
         status_delay: int = 1 * 60, refresh_delay: int = 1):
     """Watch directory pool file for autocomplete
 
-    OpenAI API Key must be set prior to function call, see set_openai_api_key()
-
     Params:
         ...
         refresh_delay: Delay in seconds for printing pool status
@@ -165,11 +160,11 @@ def watch_pool_files(
     # Idle delay
     status_delay = timedelta(seconds=round(status_delay))
 
-    # Exceptions (not use for now)
+    # Keep exceptions returned by file completion
     exceptions = []
 
-    # Inner function to print status
     def write_status(f=None, e=None):
+        """Print status"""
         nonlocal last_status_time
         status = f"Status: "
         if f is not None: status += f"{f} new file(s), "
@@ -185,13 +180,13 @@ def watch_pool_files(
     # Context manager for the thread pool executor
     with ThreadPoolExecutor(max_workers=max_files) as executor:
 
-        # Main watch loop
         file_id_counter = -1
         total_errors = 0
         future_names = {}
         last_status_time = datetime.now()
         invalid_entry_names = set()
 
+        # Main watch and pool loop
         while True:
 
             # Print idle status
@@ -199,15 +194,13 @@ def watch_pool_files(
                 logger.info(write_status())
                 # print_f("I am bored, please feed me...")
 
-            # Cache new file(s) (if any)
+            # Cache new file(s)(if any)
             prev_invalid_entry_names = set(invalid_entry_names)
             invalid_entry_names.clear()
             for entry_name in listdir(in_dir):
 
-                # Reconstitute path
                 entry_path = in_dir / entry_name
 
-                # Skip tests
                 if IGNORE_DOT_FILE and entry_name.startswith('.'): continue
                 if entry_name in prev_invalid_entry_names:
                     invalid_entry_names.add(entry_name)
@@ -216,14 +209,13 @@ def watch_pool_files(
                     invalid_entry_names.add(entry_name)
                     continue
 
-                # Rename and cache file
                 new_filename = _write_new_filename(
                     datetime.now().strftime('%Y-%m-%d %H%M%S') + ' ' + entry_name,
                     cache_dir, out_dir)
                 entry_path.rename(cache_dir / new_filename)
                 pool_filenames.append((entry_name, new_filename))
 
-            # Pool files
+            # Pool new file(s)(if any)
             new_files_count = 0
             for filename in pool_filenames:
                 file_id_counter += 1
@@ -241,15 +233,11 @@ def watch_pool_files(
                 future_names[future] = new_name
             pool_filenames.clear()
 
-            # DEPRECATED
-            # Print status with new files
-            # if PRINT_NEW_FILES_STATUS and new_files_count > 0:
-
-            # Debug log status if new files
+            # Log debug status if new files
             if new_files_count > 0:
                 logger.debug(write_status(f=new_files_count))
 
-            # Manage thread exceptions
+            # Manage threads' result and exceptions
             done_futures = (
                 future for future in tuple(future_names) if future.done())
             new_errors_count = 0
@@ -266,12 +254,7 @@ def watch_pool_files(
                     new_errors_count += len(future.result())
             total_errors += new_errors_count
 
-            # DEPRECATED
-            # # Print status with new errors
-            # if PRINT_NEW_ERRORS_STATUS and new_errors_count > 0:
-            #     print_status(e=new_errors_count)
-
-            # Debug log status if new error(s)
+            # Log debug status if new error(s)
             if new_errors_count > 0:
                 logger.debug(write_status(e=new_errors_count))
 
