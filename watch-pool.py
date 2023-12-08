@@ -1,4 +1,4 @@
-"""Setup and call gramolang.watch_pool()"""
+"""Watch directory and pool file for autocomplete"""
 
 from logging import getLogger, basicConfig, INFO, DEBUG
 from pathlib import Path

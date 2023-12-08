@@ -98,7 +98,7 @@ def watch_pool_files(
         timeout: int | None = None, retries: int | None = 0,
         max_files: int | None = None, max_conversations: int | None = None,
         status_delay: int = 1 * 60, refresh_delay: int = 1):
-    """Watch directory and autocomplete files as they are added
+    """Watch directory pool file for autocomplete
 
     OpenAI API Key must be set prior to function call, see set_openai_api_key()
 

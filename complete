@@ -1,5 +1,5 @@
 #! python3
-"""Executable for gramolang.complete()"""
+"""Executable for autocompleting file"""
 
 from logging import getLogger, basicConfig, INFO, DEBUG
 from pathlib import Path
