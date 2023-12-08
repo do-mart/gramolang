@@ -95,7 +95,7 @@ def watch_pool_files(
         timeout: int | None = None, retries: int | None = 0,
         max_files: int | None = None, max_conversations: int | None = None,
         status_delay: int = 1 * 60, refresh_delay: int = 1):
-    """Watch directory pool file for autocomplete
+    """Watch directory and pool files for autocomplete
 
     Params:
         ...
