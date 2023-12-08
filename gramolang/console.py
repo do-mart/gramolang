@@ -11,13 +11,13 @@ import textwrap
 
 from openai import OpenAI
 
-from .__init__ import NAME as PACKAGE_NAME, VERSION
+from . import NAME_VERSION as PACKAGE_NAME_VERSION
 from .common import COMMAND_CHAR, NONE_ARG, NAME_ARGUMENTS_SEPS, write_error, TimePrinter
 from .command import (
     CommandClassError,
     BaseCommand, BaseEmptyCommand, BaseUnaryCommand, BaseToggleCommand,
     Commands)
-from .wrapi import APIWrapper
+from .wraipi import APIWrapper
 from .chat import (
     Role,
     SystemCommand,
@@ -264,7 +264,7 @@ class Console:
         self._running = True
 
         # Startup infos
-        self.write_line(f"{PACKAGE_NAME} v{VERSION} {self.NAME}")
+        self.write_line(f"{PACKAGE_NAME_VERSION} {self.NAME}")
         self.write_line(f"Model: {self.chat.model()}")
 
         while self._running:

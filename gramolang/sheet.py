@@ -3,7 +3,6 @@ Completion from an excel (and eventually other types of) sheet
 
 TODO: Create template.xlsx with help, and docstring to agent.setters...
 TODO: Fix ResourceWarning: unclosed <ssl.SSLSocket for unittest testing
-TODO: Create complete in text file chat for one conversation based on sheet?
 """
 
 from typing import Sequence
@@ -23,7 +22,7 @@ from .common import (
     now_delta, write_now_delta, join_none, rmark,
     write_exception, write_error)
 from .command import BaseEmptyCommand
-from .wrapi import APIWrapper
+from .wraipi import APIWrapper
 from .chat import Chat, CompleteCommand
 
 

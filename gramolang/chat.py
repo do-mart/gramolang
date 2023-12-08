@@ -1,8 +1,6 @@
 """
 Chat or conversation class
 
-TODO: Also, uniformize the SYMBOLS match sequences (e.g. ESCAPE_CHAT, TOP_P, etc.)
-
 Terminology:
 Role: role of a message (e.g. user, human, system, assistant)
 Content: content of one message
@@ -21,7 +19,7 @@ from openai import RateLimitError, APITimeoutError
 from .common import (
     TEMPERATURE_NAMES, TOP_P_NAMES, NONE_ARG,
     Role, Message)
-from .wrapi import APIWrapper, MODEL_TO_APIWRAPPER
+from .wraipi import APIWrapper, MODEL_TO_APIWRAPPER
 from .command import (
     BaseCommand, BaseEmptyCommand, BaseUnaryCommand, BaseUnaryRequiredCommand,
     Commands)

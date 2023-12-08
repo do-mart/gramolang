@@ -3,7 +3,14 @@ Package Initialization
 
 """
 
+# TODO: Create complete in text file chat for one conversation based on sheet?
+
 from logging import getLogger
+
+# Forwards
+from .wraipi import OpenAIAPIWrapper, AnthropicAPIWrapper
+from .chat import Chat
+
 
 module_logger = getLogger(__name__)
 
@@ -17,4 +24,6 @@ VERSIONS: dict[str:str] = {
 }
 VERSION = list(VERSIONS)[-1]
 
-module_logger.debug(f"Initializing package {NAME} Version {VERSION}")
+NAME_VERSION = f"{NAME} v{VERSION}"
+
+module_logger.debug(f"Initializing {NAME_VERSION}")

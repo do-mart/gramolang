@@ -3,7 +3,7 @@
 
 from pathlib import Path
 
-from gramolang.wrapi import OpenAIAPIWrapper
+from gramolang import OpenAIAPIWrapper
 from gramolang.console import Console
 
 

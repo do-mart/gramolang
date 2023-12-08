@@ -14,7 +14,7 @@ from concurrent.futures import ThreadPoolExecutor
 from .common import (
     FileType,
     rmark, now_delta, write_error, _write_new_filename)
-from .wrapi import APIWrapper
+from .wraipi import APIWrapper
 from .chat import Chat
 from .sheet import complete
 
@@ -89,7 +89,7 @@ def complete_remove_file(
     return result
 
 
-def pool_files(
+def watch_pool_files(
         root_dir: Path | str,
         in_dir_name: str = 'in', out_dir_name: str = 'out',
         api_keys: dict[type(APIWrapper): str] | None = None,
@@ -110,24 +110,23 @@ def pool_files(
         ...
     """
 
-    # Logging
-    logger = module_logger.getChild(pool_files.__name__)
+    start = datetime.now()
+    logger = module_logger.getChild(watch_pool_files.__name__)
 
-    # Test for valid files for chat completion
     def valid_file(path: Path, dir_name: str):
+        """Test for valid file for completion"""
         try:
             validate(FileType.from_path(path))
             return True
         except Exception:
             logger.warning(
                 f"Invalid file or file type, "
-                f"please remove entry '{path.name}' from {dir_name} directory.")
+                f"please remove '{path.name}' from {dir_name} directory.")
             return False
 
-    # Start message
-    # TODO Better logic for printing datetime?
-    logger.info(datetime.now().strftime('%c'))
-    logger.info("Starting file watch pool for chat completion.")
+    # Start messages
+    logger.info("Watch and pool files for chat completion.")
+    logger.info(f"Start time: {start.strftime('%c')}")
 
     # Directories initialization
     logger.info(f"Root directory: {root_dir}")

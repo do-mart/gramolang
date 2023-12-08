@@ -1,65 +1,20 @@
 from pathlib import Path
-from sys import path
+from datetime import datetime
+from tabulate import tabulate
 
-import openai
+from gramolang import OpenAIAPIWrapper
 
-from gramolang.common import set_openai_api_key
+api_key_file = 'openai-api-key-uqam'
+api_wrapper = OpenAIAPIWrapper(
+    api_key_file=Path.home()/'.mz'/api_key_file)
 
-
-# API Key file
-API_KEY_FILE = Path.home()/'.mz/openai-api-key-uqam'
-
-# Set OpenAI API Key
-set_openai_api_key(API_KEY_FILE)
-
-response = openai.Model.list()
-models = {}
-for i, item in enumerate(response['data']):
-    parts = item['id'].split('-')
-    d = models
-    for part in parts:
-        if part not in d: d[part] = {}
-        d = d[part]
-    d[item['id']] = i
-    print(f"{i}. id: {item['id']}")
-
-
-def write_iter(title, iterable, depth=0):
-    """Write a string with the content of an iterable object.
-
-    If object has a __getitem__ attribute, the value in each key-value pair
-    will also be written. The function can self-reenter to print embedded dict
-    or sets."""
-
-    pad = "\t"
-    buf = f"{pad * depth}{title} ({len(iterable)} items):"
-    for i, k in enumerate(iterable):
-        if hasattr(iterable, "__getitem__"):
-            # if isinstance(iterable, dict):
-            v = iterable[k]
-            if isinstance(v, dict) or isinstance(v, set):
-                buf += "\n" + write_iter(f"{i}. {k}", v, depth + 1)
-            else:
-                buf += f"\n{pad * (depth + 1)}{i}. {k}: {v}"
-        else:
-            buf += f"\n{pad * (depth + 1)}{i}. {k}"
-    return buf
-
+models = api_wrapper.client.models.list().data
+headers = ('', 'id', 'created', 'owned_by')
+sorted_table = (
+    (i + 1, model.id, datetime.fromtimestamp(model.created), model.owned_by)
+    for i, model in enumerate(sorted(models, key=lambda m: m.id)))
 
 print()
-print(write_iter('models', models))
-
-
-# def write_table(items, depth=0):
-#     pad = "\t\t"
-#     buf = pad * depth
-#     for key in items:
-#         buf += key
-#         if len(items[key]) != 0: buf += write_table(items[key], depth + 1)
-#         else: buf += '\n'
-#     return buf
-#
-#
-# print()
-# print(write_table(models))
-#
+print(f"OpenAI models with API key '{api_key_file}'")
+print()
+print(tabulate(sorted_table, headers=headers))

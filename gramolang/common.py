@@ -198,19 +198,39 @@ def print_error(
         file=file)
 
 
-# Logging
-# -------
+# Environment variables and files
+# -------------------------------
 
-# DEPRECATED
-# def base_log(*args, file: TextIO | None = stdout, **kwargs):
-#     """Simple common logger for package
-#
-#     Time can be added to all log entry with datetime.now().strftime('%X') as a
-#     first argument in the print command.
-#     """
-#     if file is None: return
-#     print(*args, **kwargs, file=file, flush=True)
+def get_file_variable(name: str, file: Path | str = None, default=None):
+    """Get the value of a variable in a file or return default value.
 
+    The key must be writen in the form name=key on a single line. Only the
+    first line starting with name will be read.
+    """
+    if not isinstance(file, Path): file = Path(file)
+    if not file.is_file():
+        raise FileNotFoundError(f"API key file doesn't exist: {file}")
+    with open(file, 'r') as file:
+        for line in file:
+            line = line.strip()
+            if line.startswith(name): return split_name_arguments(line)[1]
+    return default
+
+
+def get_file_environ_variable(name: str, file: Path | str = None):
+    """Get the value of a variable in a file or in an environment variable."""
+    if file is not None:
+        value = get_file_variable(name=name, file=file)
+        if value is not None: return value
+        else: raise KeyError(f"Cannot find variable '{name}' in file: {file}")
+    else:
+        if name in environ: return environ[name]
+        else:
+            raise KeyError(f"Environment variable '{name}' doesn't exist.")
+
+
+# TODO: TimePrinter must use call back for printing since Console define its
+#       own print/write method.
 
 class TimePrinter(Thread):
 
@@ -256,43 +276,6 @@ class TimePrinter(Thread):
     @property
     def time_delta(self):
         return self._time_delta
-
-
-# Environment variables and files
-# -------------------------------
-
-def get_file_variable(name: str, file: Path | str = None, default=None):
-    """Get the value of a variable in a file or return default value.
-
-    The key must be writen in the form name=key on a single line. Only the
-    first line starting with name will be read.
-    """
-    if not isinstance(file, Path): file = Path(file)
-    if not file.is_file():
-        raise FileNotFoundError(f"API key file doesn't exist: {file}")
-    with open(file, 'r') as file:
-        for line in file:
-            line = line.strip()
-            if line.startswith(name): return split_name_arguments(line)[1]
-    return default
-
-
-def get_file_environ_variable(name: str, file: Path | str = None):
-    """Get the value of a variable in a file or in an environment variable."""
-    if file is not None:
-        value = get_file_variable(name=name, file=file)
-        if value is not None: return value
-        else: raise KeyError(f"Cannot find variable '{name}' in file: {file}")
-    else:
-        if name in environ: return environ[name]
-        else:
-            raise KeyError(f"Environment variable '{name}' doesn't exist.")
-
-
-# DEPRECATED
-# def set_openai_api_key(
-#         file: Path | str = None, name: str = OPENAI_API_KEY_NAME):
-#     openai.api_key = get_file_environ_variable(name, file)
 
 
 # File/directory functionalities

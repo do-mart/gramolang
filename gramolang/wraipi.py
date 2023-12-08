@@ -1,5 +1,8 @@
 """
-Wrapper of APIs: Abstraction layer over each organization's API
+Wrapper of AI Organizations' APIs
+
+Layer of abstraction over each organization's API to provide the same interface
+for all models.
 
 """
 
@@ -36,10 +39,17 @@ class APIWrapper:
                 self.API_KEY_NAME, api_key_file)
 
 
+# TODO: integrate a model function directly in the API?
+# TODO: Test the MODELS constant against the available models at runtime
+#       (The same list should be re-used)
+
 class OpenAIAPIWrapper(APIWrapper):
     """Open AI's API wrapper"""
 
+    # API key name
     API_KEY_NAME: str = 'OPENAI_API_KEY'
+
+    # Implemented/supported models
     MODELS: set[str] = {'gpt-3.5-turbo', 'gpt-4', 'gpt-4-1106-preview'}
 
     def __init__(
