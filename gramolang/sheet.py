@@ -119,7 +119,7 @@ def complete(
         api_key_files: dict[type(APIWrapper): Path] | None = None,
         model: str = Chat.MODELS[0],
         timeout: int | None = None, retries: int | None = 0,
-        max_conversations: int | None = None,
+        max_chats: int | None = None,
         file_id: str | int | None = None):
     """Complete chats in Excel workbook columns
 
@@ -151,7 +151,7 @@ def complete(
 
     # Concurrent completion of all columns
     i_chat = 0
-    with ThreadPoolExecutor(max_workers=max_conversations) as executor:
+    with ThreadPoolExecutor(max_workers=max_chats) as executor:
 
         # Workbook lock for modification (for openpyxl)
         lock = Lock()

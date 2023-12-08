@@ -17,7 +17,7 @@ api_key_files = {
 MODEL = 'gpt-3.5-turbo'     # Default model
 TIMEOUT = 2 * 60            # Max. time in seconds for one chat completion
 RETRIES = 4                 # Number of times to retries on timeout or rate limit
-MAX_CONVERSATIONS = None    # Max. concurrent conversations for each file (None for default)
+MAX_CHATS = None            # Max. concurrent conversations for each file (None for default)
 LOG_LEVEL = INFO            # Logging level (must import from logging)
 
 # Logging
@@ -42,7 +42,7 @@ if len(argv) > 3:
 try: complete_file(
     path=Path(argv[1]), new_path=Path(argv[2]) if len(argv) == 3 else None,
     api_key_files=api_key_files, model=MODEL,
-    timeout=TIMEOUT, retries=RETRIES, max_conversations=MAX_CONVERSATIONS)
+    timeout=TIMEOUT, retries=RETRIES, max_chats=MAX_CHATS)
 except Exception as e:
     print(e)
     exit(1)

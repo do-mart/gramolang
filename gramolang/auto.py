@@ -40,9 +40,21 @@ def complete_file(
         api_key_files: dict[type(APIWrapper): Path] | None = None,
         model: str = Chat.MODELS[0],
         timeout: int | None = None, retries: int | None = 0,
-        max_conversations: int | None = None,
+        max_chats: int | None = None,
         file_id: str | int | None = None):
-    """Autocomplete file"""
+    """Autocomplete file
+
+    Params:
+        path: Path of file to complete
+        new_path: Path of new completed file
+        api_keys: Map of API key for different APIWrapper
+        api_key_files: Map of API key file for different APIWrapper
+        model: Default model to use (may also be set in file)
+        timeout: Time in seconds before completion times out
+        retries: Retries attempts on timeout or rate limit
+        max_chats: Max. concurrent chat completions in a file (None for default)
+        file_id: File identification to write in logs
+    """
 
     start = datetime.now()
     logger = module_logger.getChild(complete_file.__name__)
@@ -58,7 +70,7 @@ def complete_file(
             return complete(
                 workbook_path=path, new_workbook_path=new_path,
                 api_keys=api_keys, api_key_files=api_key_files, model=model,
-                timeout=timeout, retries=retries, max_conversations=max_conversations,
+                timeout=timeout, retries=retries, max_chats=max_chats,
                 file_id=file_id)
 
 
@@ -68,19 +80,31 @@ def complete_remove_file(
         api_key_files: dict[type(APIWrapper): Path] | None = None,
         model: str = Chat.MODELS[0],
         timeout: int | None = None, retries: int | None = 0,
-        max_conversations: int | None = None,
+        max_chats: int | None = None,
         file_id: str | int | None = None):
-    """Autocomplete and remove original file"""
+    """Autocomplete and remove original file
+
+    Params:
+        path: Path of file to complete and delete
+        new_path: See complete_file param.
+        api_keys: See complete_file param.
+        api_key_files: See complete_file param.
+        model: See complete_file param.
+        timeout: See complete_file param.
+        retries: See complete_file param.
+        max_chats: See complete_file param.
+        file_id: See complete_file param.
+    """
 
     # Call to complete file
     result = complete_file(
         path=path, new_path=new_path,
         api_keys=api_keys, api_key_files=api_key_files, model=model,
-        timeout=timeout, retries=retries, max_conversations=max_conversations,
+        timeout=timeout, retries=retries, max_chats=max_chats,
         file_id=file_id)
 
     # Delete original file
-    if new_path.is_file(): path.unlink()
+    if new_path.is_file() and path != new_path: path.unlink()
 
     # Return call result
     return result
@@ -93,16 +117,23 @@ def watch_pool_files(
         api_key_files: dict[type(APIWrapper): Path] | None = None,
         model: str = Chat.MODELS[0],
         timeout: int | None = None, retries: int | None = 0,
-        max_files: int | None = None, max_conversations: int | None = None,
+        max_chats: int | None = None, max_files: int | None = None,
         status_delay: int = 1 * 60, refresh_delay: int = 1):
     """Watch directory and pool files for autocomplete
 
     Params:
-        ...
-        refresh_delay: Delay in seconds for printing pool status
-        idle_delay: Delay in seconds since last message for printing idle message
-        max_files: Max. worker threads in pool to process files
-        ...
+        root_dir: Path to pool root directory (ok if new dir.)
+        in_dir_name: Name of input directory within root_dir
+        out_dir_name: Name of output directory within root_dir
+        api_keys: See complete_file param.
+        api_key_files: See complete_remove_file param.
+        model: See complete_remove_file param.
+        timeout: See complete_remove_file param.
+        retries: See complete_remove_file param.
+        max_chats: See complete_remove_file param.
+        max_files: Max. concurrent file completions (None for default)
+        status_delay: Delay in seconds before printing status
+        refresh_delay: Delay in seconds before checking for files in input dir.
     """
 
     start = datetime.now()
@@ -229,7 +260,7 @@ def watch_pool_files(
                     file_id=file_id,
                     api_keys=api_keys, api_key_files=api_key_files,
                     model=model, timeout=timeout, retries=retries,
-                    max_conversations=max_conversations)
+                    max_chats=max_chats)
                 future_names[future] = new_name
             pool_filenames.clear()
 
