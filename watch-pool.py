@@ -7,8 +7,9 @@ from gramolang import NAME_VERSION as GRAMOLANG_NAME_VERSION, OpenAIAPIWrapper
 from gramolang.auto import watch_pool_files
 
 
-# API key, client and model
-api_key_files = {OpenAIAPIWrapper: Path.home()/'.mz/openai-api-key-uqam'}
+# API keys
+api_key_files = {
+    OpenAIAPIWrapper: Path(__file__).parent / '.keys' / 'openai-api-key-uqam'}
 
 # Settings
 POOL_DIR = Path(__file__).parent / Path(__file__).stem

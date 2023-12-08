@@ -7,8 +7,11 @@ from gramolang import OpenAIAPIWrapper
 from gramolang.console import Console
 
 
+# API Keys
+api_key_files = {
+    OpenAIAPIWrapper: Path(__file__).parent / '.keys' / 'openai-api-key-uqam'}
+
 # Settings
-api_key_files = {OpenAIAPIWrapper: Path.home()/'.mz/openai-api-key-uqam'}
 MODEL = 'gpt-4'
 
 # Create and start console

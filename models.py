@@ -6,7 +6,7 @@ from tabulate import tabulate
 
 from gramolang import OpenAIAPIWrapper
 
-api_key_file = Path.home() / '.mz' / 'openai-api-key-uqam'
+api_key_file = Path(__file__).parent / '.keys' / 'openai-api-key-uqam'
 
 api_wrapper = OpenAIAPIWrapper(api_key_file=api_key_file)
 

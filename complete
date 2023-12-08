@@ -10,7 +10,8 @@ from gramolang.auto import complete_file
 
 
 # API key, client and model
-api_key_files = {OpenAIAPIWrapper: Path.home()/'.mz/openai-api-key-uqam'}
+api_key_files = {
+    OpenAIAPIWrapper: Path(__file__).parent / '.keys' / 'openai-api-key-uqam'}
 
 # Settings
 MODEL = 'gpt-3.5-turbo'     # Default model
