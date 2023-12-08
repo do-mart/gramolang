@@ -1,5 +1,5 @@
 """
-Wrapper of AI Organizations' APIs
+Wrapper of AI Organizations' API
 
 Layer of abstraction over each organization's API to provide the same interface
 for all models.
@@ -74,7 +74,7 @@ class OpenAIAPIWrapper(APIWrapper):
 
         # TODO: Test all variables, again!
 
-        # Reformat message for OpenAI format
+        # Reformat messages in OpenAI format
         messages = [{'role': m.role.value, 'content': m.content} for m in messages]
 
         # Create request
