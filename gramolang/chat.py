@@ -14,8 +14,6 @@ from typing import Any, NamedTuple
 from logging import getLogger
 from pathlib import Path
 
-from openai import RateLimitError, APITimeoutError
-
 from .common import (
     TEMPERATURE_NAMES, TOP_P_NAMES, NONE_ARG,
     Role, Message)
@@ -169,10 +167,6 @@ class Chat:
 
     # Default system message
     SYSTEM_MESSAGE = "You’re a kind helpful assistant"  # Default System Role
-
-    # Exceptions for chat complete
-    RATE_EXCEPTIONS: tuple[Exception] = (RateLimitError,)
-    TIMEOUT_EXCEPTIONS: tuple[Exception] = (APITimeoutError,)
 
     # Default values for reset attributes
     MAX_TOKENS: int | None = None       # 1, 2, 3, ..., ? (tokens) | None
@@ -410,8 +404,6 @@ class Chat:
             max_tokens=self.max_tokens, temperature=self.temperature, top_p=self.top_p,
             choices=self.choices,
             timeout=self.timeout, retries=self.retries,
-            rate_exceptions=self.RATE_EXCEPTIONS,
-            timeout_exceptions=self.TIMEOUT_EXCEPTIONS,
             call_id=call_id)
 
         # Add assistant response

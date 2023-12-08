@@ -10,7 +10,7 @@ from typing import Any, Sequence
 from logging import getLogger
 from pathlib import Path
 
-from openai import OpenAI
+from openai import OpenAI, RateLimitError, APITimeoutError
 
 from .common import Message, get_file_environ_variable, retry
 
@@ -40,7 +40,7 @@ class APIWrapper:
 
 
 # TODO: integrate a model function directly in the API?
-# TODO: Test the MODELS constant against the available models at runtime
+# TODO: Test the MODELS constant against the available models at runtime?
 #       (The same list should be re-used)
 
 class OpenAIAPIWrapper(APIWrapper):
@@ -51,6 +51,10 @@ class OpenAIAPIWrapper(APIWrapper):
 
     # Implemented/supported models
     MODELS: set[str] = {'gpt-3.5-turbo', 'gpt-4', 'gpt-4-1106-preview'}
+
+    # Exceptions for chat complete
+    RATE_EXCEPTIONS: tuple[Exception] = (RateLimitError,)
+    TIMEOUT_EXCEPTIONS: tuple[Exception] = (APITimeoutError,)
 
     def __init__(
             self,
@@ -63,8 +67,6 @@ class OpenAIAPIWrapper(APIWrapper):
             max_tokens: int | None = None, temperature: float | None = None, top_p: float | None = None,
             choices: int | None = None,
             timeout: float | None = None, retries: int = 0,
-            rate_exceptions: Sequence[Exception] | tuple = tuple(),
-            timeout_exceptions: Sequence[Exception] | tuple = tuple(),
             base_delay: float = 1, jitter: bool = True, spread_factor: float = 0.5,
             backoff: bool = True, backoff_base: float = 2,
             call_id: str | int | None = None) -> (dict, Any):
@@ -95,8 +97,8 @@ class OpenAIAPIWrapper(APIWrapper):
         # Create function call with decorator
         @retry(
             retries=retries,
-            rate_exceptions=rate_exceptions,
-            timeout_exceptions=timeout_exceptions,
+            rate_exceptions=self.RATE_EXCEPTIONS,
+            timeout_exceptions=self.TIMEOUT_EXCEPTIONS,
             base_delay=base_delay, jitter=jitter, spread_factor=spread_factor,
             backoff=backoff, backoff_base=backoff_base,
             call_id=call_id, log_messages=(log_message,))
