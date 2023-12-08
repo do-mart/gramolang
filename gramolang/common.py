@@ -121,8 +121,10 @@ def split_name_arguments(string):
     for c in NAME_ARGUMENTS_SEPS:
         new_i = string.find(c)
         if new_i != -1 and new_i < i: i = new_i
-    if i != len(string): return string[:i], string[i:].lstrip(NAME_ARGUMENTS_SEPS_STR)
-    else: return string, None
+    if i != len(string):
+        return string[:i], string[i:].lstrip(NAME_ARGUMENTS_SEPS_STR)
+    else:
+        return string, None
 
 
 # Text formatting
@@ -205,7 +207,8 @@ def get_file_variable(name: str, file: Path | str = None, default=None):
     """Get the value of a variable in a file or return default value.
 
     The key must be writen in the form name=key on a single line. Only the
-    first line starting with name will be read.
+    first line starting with name will be read. The equal (=) signe can be
+    replaced by any character in NAME_ARGUMENTS_SEPS.
     """
     if not isinstance(file, Path): file = Path(file)
     if not file.is_file():
@@ -281,7 +284,7 @@ class TimePrinter(Thread):
 # File/directory functionalities
 # ------------------------------
 
-def _write_new_filename(filename: str, *dirs: Path):
+def write_new_filename(filename: str, *dirs: Path):
     """Write a new filename that does not exist in a series of directories"""
     i = 0
     f = Path(filename)

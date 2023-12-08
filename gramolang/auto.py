@@ -13,7 +13,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 from .common import (
     FileType,
-    rmark, now_delta, write_error, _write_new_filename)
+    rmark, now_delta, write_error, write_new_filename)
 from .wraipi import APIWrapper
 from .chat import Chat
 from .sheet import complete
@@ -209,7 +209,7 @@ def watch_pool_files(
                     invalid_entry_names.add(entry_name)
                     continue
 
-                new_filename = _write_new_filename(
+                new_filename = write_new_filename(
                     datetime.now().strftime('%Y-%m-%d %H%M%S') + ' ' + entry_name,
                     cache_dir, out_dir)
                 entry_path.rename(cache_dir / new_filename)
