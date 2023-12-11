@@ -26,8 +26,8 @@ ESCAPE_CHAR = '\\'
 
 # Separators
 ARGUMENTS_SEP = ' '
-NAME_ARGUMENTS_SEPS = ('=', ' ', ':')
-NAME_ARGUMENTS_SEPS_STR = ''.join(NAME_ARGUMENTS_SEPS)
+NAME_VALUE_SEPS = ('=', ' ', ':')
+NAME_VALUE_SEPS_STR = ''.join(NAME_VALUE_SEPS)
 
 # Sentinel value for no argument (when None is a possible value)
 NONE_ARG = object()
@@ -118,11 +118,11 @@ def join_none(
 
 def split_name_arguments(string):
     i = len(string)
-    for c in NAME_ARGUMENTS_SEPS:
+    for c in NAME_VALUE_SEPS:
         new_i = string.find(c)
         if new_i != -1 and new_i < i: i = new_i
     if i != len(string):
-        return string[:i], string[i:].lstrip(NAME_ARGUMENTS_SEPS_STR)
+        return string[:i], string[i:].lstrip(NAME_VALUE_SEPS_STR)
     else:
         return string, None
 

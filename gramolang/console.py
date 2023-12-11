@@ -12,7 +12,7 @@ import textwrap
 from openai import OpenAI
 
 from . import NAME_VERSION as PACKAGE_NAME_VERSION
-from .common import COMMAND_CHAR, NONE_ARG, NAME_ARGUMENTS_SEPS, write_error, TimePrinter
+from .common import COMMAND_CHAR, NONE_ARG, NAME_VALUE_SEPS, write_error, TimePrinter
 from .command import (
     CommandClassError,
     BaseCommand, BaseEmptyCommand, BaseUnaryCommand, BaseToggleCommand,
@@ -139,7 +139,7 @@ class Console:
     def write_line(self, *args, **kwargs): self.write(*args, **kwargs, end='\n')
 
     def write_value(self, name: str, value):
-        self.write_line(f"{name} {NAME_ARGUMENTS_SEPS[0]}", value.__repr__())
+        self.write_line(f"{name} {NAME_VALUE_SEPS[0]}", value.__repr__())
 
     # Inner generic toggle method
     # ---------------------------
