@@ -2,13 +2,26 @@
 High-level package for using large language models (or _grand modèle de language_, as
 one would say in French)
 
+
+## AI Organizations API Wrappers
+The package provides a single interface for accessing each organizations' models
+or functionalities. This additional layer of abstraction is implemented with AI
+organizations' API wrappers. Each API wrapper (e.g. `OpenAIAPIWrapper`)
+inherits from the parent class `APIWrapper`.
+
+
+## Chats or conversations
+The `Chat` class provides a convenient data structure for generating and storing
+conversations, and then completing these conversations. This is an additional
+layer of abstraction over the API wrappers.
+
+
 ## API keys
 AI organizations' APIs requires a key that must be provided before using their
-models or making most calls to their interfaces. The package allows providing
-the key value directly, retrieving the key from a file, or from an environment
-variable. Since multiple models from different organizations can be used
-interchangeably, a package user can provide multiple keys if he intends to use
-the APIs of multiple organizations.
+models or making most calls to their interfaces. A user can provide the key
+value directly, retrieve the key from a file, or from an environment variable.
+Since APIs from different organizations can be used interchangeably, a user can
+provide multiple keys if he intends to use the APIs of multiple organizations.
 
 ### 1. Providing a key value directly
 Past API keys as `APIWrapper: 'apikeyvalue'` pairs in a dictionary: 
@@ -17,7 +30,7 @@ Past API keys as `APIWrapper: 'apikeyvalue'` pairs in a dictionary:
     >>> api_keys = {OpenAIAPIWrapper: 'apikeyvalue'}
 
 ### 2. Providing a key in a file
-When using a file instead of direct values, write the key in the form
+When using a file instead of the value directly, write the key in the form
 `name=apikeyvalue` on a single file line. Use the name stored in the
 corresponding `APIWrapper` class in the class property `API_KEY_NAME`:
 
