@@ -4,11 +4,12 @@ one would say in French)
 
 ## API keys
 AI organizations' APIs requires a key that must be provided before making most
-call and using their models. The package allows providing the key value
-directly, retrieving the key from a file, or from an environment variable.
-Since multiple models from different organizations can be used interchangeably,
-a package user must past key values or key files paths in a dict keyed with the
-`APIWrapper` class corresponding with the API that will be used.
+call to their interfaces and using their models. The package allows providing
+the key value directly, retrieving the key from a file, or from an environment
+variable. Since multiple models from different organizations can be used
+interchangeably, a package user must past key values or key files paths in a
+dict keyed with the `APIWrapper` class corresponding with the API that will be
+used.
 
 ### Providing a key value directly
 Past API keys as `APIWrapper: 'apikeyvalue'` pairs in a dictionary: 
@@ -27,7 +28,7 @@ the `APIWrapper` class in the class property `API_KEY_NAME`:
 
 A key file can contain keys for different APIs or these keys can be stored in
 different files. Only the first line starting with the key name will be read by
-each API wrapper. The package will look for the equal (=) sign as the name/value
+each API wrapper. The package will look for the equal (`=`) sign as the name/value
 separator and any other characters in the tuple `common.NAME_ARGUMENTS_SEPS`.
 
 Past API key files as `APIWrapper: pathlib.Path` pairs where Path is a Path
