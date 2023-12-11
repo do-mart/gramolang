@@ -5,9 +5,9 @@ one would say in French)
 
 ## AI Organizations API Wrappers
 The package provides a single interface for accessing each organizations' models
-or functionalities. This additional layer of abstraction is implemented with AI
-organizations' API wrappers. Each API wrapper (e.g. `OpenAIAPIWrapper`)
-inherits from the parent class `APIWrapper`.
+or functionalities. This additional layer of abstraction is implemented with a
+wrapper class for each AI organizations' API. Each API wrapper (e.g.
+`OpenAIAPIWrapper`) inherits from the parent class `APIWrapper`.
 
 
 ## Chats or conversations
