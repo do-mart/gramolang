@@ -18,8 +18,8 @@ Past API keys as `APIWrapper: 'apikeyvalue'` pairs in a dictionary:
 
 ### 2. Providing a key in a file
 When using a file instead of direct values, write the key in the form
-`name=apikeyvalue` on a single file line. Use the corresponding name stored in
-the `APIWrapper` class in the class property `API_KEY_NAME`:
+`name=apikeyvalue` on a single file line. Use the name stored in the
+corresponding `APIWrapper` class in the class property `API_KEY_NAME`:
 
     >>> from gramolang import OpenAIAPIWrapper 
     >>> OpenAIAPIWrapper.API_KEY_NAME

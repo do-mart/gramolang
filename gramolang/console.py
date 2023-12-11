@@ -9,8 +9,6 @@ from sys import stdin, stdout
 import readline
 import textwrap
 
-from openai import OpenAI
-
 from . import NAME_VERSION as PACKAGE_NAME_VERSION
 from .common import COMMAND_CHAR, NONE_ARG, NAME_VALUE_SEPS, write_error, TimePrinter
 from .command import (
