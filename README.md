@@ -1,5 +1,6 @@
 # gramolang
-High-level console and interface for large language models
+High-level package for large language models (or _grand modèle de language_, as
+one would say in French)
 
 ## API keys
 AI organizations' APIs requires a key that must be provided before making most
