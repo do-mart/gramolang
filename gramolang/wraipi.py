@@ -12,10 +12,11 @@ TODO: Change the mechanics for passing keys? Use Enum? API_KEY_NAME?
 from typing import Any, Sequence
 from logging import getLogger
 from pathlib import Path
+from os import environ
 
 from openai import OpenAI, RateLimitError, APITimeoutError
 
-from .common import Message, get_file_environ_variable, retry
+from .common import Message, get_file_variable, retry
 
 
 # Logging
@@ -26,31 +27,60 @@ class APIWrapper:
     """Base inheritable class for API wrapper classes"""
 
     API_KEY_NAME: str = ''
+    API_KEY_NAMES: tuple[str] = ()
     MODELS: set[str] = set()
 
     def __init__(
             self,
             api_key: str | None = None, api_key_file: Path | None = None):
-
         self.logger = module_logger.getChild(self.__class__.__name__)
         self.logger.debug(f"Initializing {self}")
+
+        # API Key
+        self.api_key_name: str | None = None
+        self.api_key: str | None = None
+        self.set_api_key(api_key=api_key, api_key_file=api_key_file)
+
+    def set_api_key(
+            self,
+            api_key: str | None = None, api_key_file: Path | None = None):
 
         if api_key is not None:
             self.api_key = api_key
         else:
-            self.api_key = get_file_environ_variable(
-                self.API_KEY_NAME, api_key_file)
-
+            if api_key_file is not None:
+                for name in self.API_KEY_NAMES:
+                    api_key = get_file_variable(
+                        name=name, path=api_key_file, default=None)
+                    if api_key:
+                        self.api_key_name = name
+                        self.api_key = api_key
+                        break
+                if api_key is None: raise KeyError(
+                    f"Cannot find API key: "
+                    f"No variable {' or '.join(self.API_KEY_NAMES)} "
+                    f"in file '{api_key_file}'")
+            else:
+                for name in self.API_KEY_NAMES:
+                    if name in environ:
+                        self.api_key_name = name
+                        self.api_key = environ[name]
+                        break
+                if api_key is None: raise Exception(
+                    f"Missing API key: no value or key file provided, and "
+                    f"no environment variable {' or '.join(self.API_KEY_NAMES)}.")
 
 # TODO: integrate a model function directly in the API?
 # TODO: Test the MODELS constant against the available models at runtime?
 #       (The same list should be re-used)
 
-class OpenAIAPIWrapper(APIWrapper):
+
+class OpenAIWrapper(APIWrapper):
     """Open AI's API wrapper"""
 
-    # API key name
+    # API key
     API_KEY_NAME: str = 'OPENAI_API_KEY'
+    API_KEY_NAMES: tuple[str] = ('OpenAIAPIWrapper', API_KEY_NAME)
 
     # Implemented/supported models
     MODELS: set[str] = {'gpt-3.5-turbo', 'gpt-4', 'gpt-4-1106-preview'}
@@ -131,9 +161,9 @@ class AnthropicAPIWrapper(APIWrapper):
 # ------
 
 MODEL_TO_APIWRAPPER: dict[str: APIWrapper] = {}
-for apiwrapper in (OpenAIAPIWrapper, AnthropicAPIWrapper):
-    for model in apiwrapper.MODELS:
+for api_wrapper in (OpenAIWrapper, AnthropicAPIWrapper):
+    for model in api_wrapper.MODELS:
         if model in MODEL_TO_APIWRAPPER:
             raise KeyError(f"Model '{model}' already exists.")
         else:
-            MODEL_TO_APIWRAPPER[model] = apiwrapper
+            MODEL_TO_APIWRAPPER[model] = api_wrapper

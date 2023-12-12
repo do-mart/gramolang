@@ -3,13 +3,13 @@
 
 from pathlib import Path
 
-from gramolang import OpenAIAPIWrapper
+from gramolang import OpenAIWrapper
 from gramolang.console import Console
 
 
 # API Keys
 api_key_files = {
-    OpenAIAPIWrapper: Path(__file__).parent / '.keys' / 'openai-api-key-uqam'}
+    OpenAIWrapper: Path(__file__).parent / '.keys' / 'openai-api-key-uqam'}
 
 # Settings
 MODEL = 'gpt-4'

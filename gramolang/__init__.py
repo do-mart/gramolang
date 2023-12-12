@@ -8,7 +8,7 @@ Package Initialization
 from logging import getLogger
 
 # Forwards
-from .wraipi import OpenAIAPIWrapper, AnthropicAPIWrapper
+from .wraipi import OpenAIWrapper, AnthropicAPIWrapper
 from .chat import Chat
 
 

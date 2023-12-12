@@ -203,18 +203,18 @@ def print_error(
 # Environment variables and files
 # -------------------------------
 
-def get_file_variable(name: str, file: Path | str = None, default=None):
+def get_file_variable(name: str, path: Path, default=None):
     """Get the value of a variable in a file or return default value.
 
     The key must be writen in the form name=key on a single line. Only the
     first line starting with name will be read. The equal (=) signe can be
-    replaced by any character in NAME_ARGUMENTS_SEPS.
+    replaced by any character in NAME_VALUE_SEPS.
     """
-    if not isinstance(file, Path): file = Path(file)
-    if not file.is_file():
-        raise FileNotFoundError(f"API key file doesn't exist: {file}")
-    with open(file, 'r') as file:
-        for line in file:
+    if not isinstance(path, Path): path = Path(path)
+    if not path.is_file():
+        raise FileNotFoundError(f"API key file doesn't exist: {path}")
+    with open(path, 'r') as path:
+        for line in path:
             line = line.strip()
             if line.startswith(name): return split_name_arguments(line)[1]
     return default
@@ -223,7 +223,7 @@ def get_file_variable(name: str, file: Path | str = None, default=None):
 def get_file_environ_variable(name: str, file: Path | str = None):
     """Get the value of a variable in a file or in an environment variable."""
     if file is not None:
-        value = get_file_variable(name=name, file=file)
+        value = get_file_variable(name=name, path=file)
         if value is not None: return value
         else: raise KeyError(f"Cannot find variable '{name}' in file: {file}")
     else:

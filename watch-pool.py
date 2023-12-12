@@ -3,13 +3,13 @@
 from logging import getLogger, basicConfig, INFO, DEBUG
 from pathlib import Path
 
-from gramolang import NAME_VERSION as GRAMOLANG_NAME_VERSION, OpenAIAPIWrapper
+from gramolang import NAME_VERSION as GRAMOLANG_NAME_VERSION, OpenAIWrapper
 from gramolang.auto import watch_pool_files
 
 
 # API keys
 api_key_files = {
-    OpenAIAPIWrapper: Path(__file__).parent / '.keys' / 'openai-api-key-uqam'}
+    OpenAIWrapper: Path(__file__).parent / '.keys' / 'openai-api-key-uqam'}
 
 # Settings
 MODEL = 'gpt-3.5-turbo'     # Default model
