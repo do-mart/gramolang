@@ -61,5 +61,5 @@ The package will raise an exception if no key value can be retrieved with one
 of the three methods mentioned above. If the methods are used together, and if
 a key is provided with more than one method, the `APIWrapper` will use the
 first key retrieved in the order above. If a key is retrieved but its value is
-invalid, the underlying organization's API may not raise an exception until the
-first call (e.g. when  trying to complete a conversation for the first time).
+invalid, an exception may not be raised until the first call to the underlying
+API (e.g. when  trying to complete a conversation for the first time).
