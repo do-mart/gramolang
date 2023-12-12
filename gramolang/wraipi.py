@@ -80,7 +80,7 @@ class OpenAIWrapper(APIWrapper):
 
     # API key
     API_KEY_NAME: str = 'OPENAI_API_KEY'
-    API_KEY_NAMES: tuple[str] = ('OpenAIAPIWrapper', API_KEY_NAME)
+    API_KEY_NAMES: tuple[str] = ('OpenAIWrapper', API_KEY_NAME)
 
     # Implemented/supported models
     MODELS: set[str] = {'gpt-3.5-turbo', 'gpt-4', 'gpt-4-1106-preview'}
@@ -146,6 +146,7 @@ class AnthropicAPIWrapper(APIWrapper):
     """Anthropic's API wrapper"""
 
     API_KEY_NAME: str = 'OPENAI_API_KEY'
+    API_KEY_NAMES: tuple[str] = ('AnthropicWrapper', API_KEY_NAME)
     MODELS = {'claude', 'claude2'}
 
     def __init__(
