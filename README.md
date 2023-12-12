@@ -32,16 +32,11 @@ Past API keys as `APIWrapper: 'apikeyvalue'` pairs in a `dict`:
 ### 2. Providing keys in a file
 When using a file instead of the value directly, write the key in the form
 `name=apikeyvalue` on a single file line. Use either the name of the API wrapper
-class (default) or the underlying organisation's API name, e.g.:
+class (default) or the underlying organisation's API name (both names are stored
+the wrapper class tuple `API_KEY_NAMES`), e.g.:
 
     # Example of the content of an API key file
     OpenAIWrapper=apikeyvalue
-
-Both variable names are stored in the wrapper class tuple `API_KEY_NAMES`:
-
-    >>> from gramolang import OpenAIWrapper
-    >>> OpenAIWrapper.API_KEY_NAMES
-    ('OpenAIAPIWrapper', 'OPENAI_API_KEY')
 
 A key file can contain keys for different APIs or these keys can be stored in
 different files. Only the first line starting with the key name will be read by
