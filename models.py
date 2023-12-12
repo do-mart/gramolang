@@ -4,11 +4,11 @@ from pathlib import Path
 from datetime import datetime
 from tabulate import tabulate
 
-from gramolang import OpenAIAPIWrapper
+from gramolang import OpenAIWrapper
 
 api_key_file = Path(__file__).parent / '.keys' / 'openai-api-key-uqam'
 
-api_wrapper = OpenAIAPIWrapper(api_key_file=api_key_file)
+api_wrapper = OpenAIWrapper(api_key_file=api_key_file)
 
 models = api_wrapper.client.models.list().data
 headers = ('', 'id', 'created', 'owned_by')
