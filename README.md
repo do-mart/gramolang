@@ -24,7 +24,7 @@ Since APIs from different organizations can be used interchangeably, a user can
 provide multiple keys if he intends to use the APIs of multiple organizations.
 
 ### 1. Providing key values directly
-Past API keys as `APIWrapper: 'apikeyvalue'` pairs in a dictionary: 
+Past API keys as `APIWrapper: 'apikeyvalue'` pairs in a `dict`: 
 
     >>> from gramolang import OpenAIWrapper
     >>> api_keys = {OpenAIWrapper: 'apikeyvalue'}
@@ -32,8 +32,12 @@ Past API keys as `APIWrapper: 'apikeyvalue'` pairs in a dictionary:
 ### 2. Providing keys in a file
 When using a file instead of the value directly, write the key in the form
 `name=apikeyvalue` on a single file line. Use either the name of the API wrapper
-class (default) or the underlying organisation's API name, both names are
-stored in the wrapper class tuple `API_KEY_NAMES`:
+class (default) or the underlying organisation's API name, e.g.:
+
+    # Example of the content of an API key file
+    OpenAIWrapper=apikeyvalue
+
+Both variable names are stored in the wrapper class tuple `API_KEY_NAMES`:
 
     >>> from gramolang import OpenAIWrapper
     >>> OpenAIWrapper.API_KEY_NAMES
@@ -44,7 +48,7 @@ different files. Only the first line starting with the key name will be read by
 each API wrapper. The package will look for the equal (`=`) sign as the name/value
 separator and any other characters in the tuple `common.NAME_VALUE_SEPS`.
 
-Pass API key files as `APIWrapper: path` pairs where path is a `pathlib.Path`
+Pass API key files as `APIWrapper: path` pairs in a `dict` where path is a `pathlib.Path`
 instance pointing to the file:
 
     >>> from pathlib import Path
