@@ -30,10 +30,10 @@ Past API keys as `APIWrapper: 'apikeyvalue'` pairs in a `dict`:
     >>> api_keys = {OpenAIWrapper: 'apikeyvalue'}
 
 ### 2. Providing keys in a file
-When using a file instead of the value directly, write the key in the form
-`name=apikeyvalue` on a single file line. Use either the name of the API wrapper
-class (default) or the underlying organisation's API name (both names are stored
-the wrapper class tuple `API_KEY_NAMES`), e.g.:
+When using a file, write the key in the form `name=apikeyvalue` on a single
+line. Use either the name of the API wrapper class (default) or the underlying
+organisation's API name (both names are stored in the wrapper class tuple
+`API_KEY_NAMES`), e.g.:
 
     # Example of the content of an API key file
     OpenAIWrapper=apikeyvalue
@@ -51,7 +51,7 @@ instance pointing to the file:
     >>> api_key_files = {OpenAIWrapper: Path('.keys/api-key-file')}
 
 ### 3. Accessing keys from the environment
-If no key is provided either directly or with a file, the package will look
+If no key is provided, either directly or with a file, the package will look
 into the process environment with `os.environ`. The name of the environment
 variable is the same as the name used in the api key file and must equals one
 of the names in `API_KEY_NAMES`.
