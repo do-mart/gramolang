@@ -8,7 +8,7 @@ TODO: Change the mechanics for passing keys? Use Enum? API_KEY_NAME?
       All the above?
 
 """
-
+import logging
 from typing import Any, Sequence
 from logging import getLogger
 from pathlib import Path
@@ -46,6 +46,7 @@ class APIWrapper:
             api_key: str | None = None, api_key_file: Path | None = None):
 
         if api_key is not None:
+            self.logger.debug(f"Setting API key directly from value")
             self.api_key = api_key
         else:
             if api_key_file is not None:
@@ -53,20 +54,28 @@ class APIWrapper:
                     api_key = get_file_variable(
                         name=name, path=api_key_file, default=None)
                     if api_key:
+                        self.logger.debug(
+                            f"Setting API key from file with name {name}")
                         self.api_key_name = name
                         self.api_key = api_key
                         break
-                if api_key is None: raise KeyError(
+                # TODO: Also check for single value on a line?
+                if self.api_key is None: raise KeyError(
                     f"Cannot find API key: "
                     f"No variable {' or '.join(self.API_KEY_NAMES)} "
                     f"in file '{api_key_file}'")
             else:
                 for name in self.API_KEY_NAMES:
+                    self.logger.debug(
+                        "Environment variables:\n" +
+                        '\n'.join((f"{k}: {v}" for k, v in environ.items())))
                     if name in environ:
+                        self.logger.debug(
+                            f"Setting API key from environment variable {name}")
                         self.api_key_name = name
                         self.api_key = environ[name]
                         break
-                if api_key is None: raise Exception(
+                if self.api_key is None: raise Exception(
                     f"Missing API key: no value or key file provided, and "
                     f"no environment variable {' or '.join(self.API_KEY_NAMES)}.")
 

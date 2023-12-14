@@ -41,7 +41,8 @@ organisation's API name (both names are stored in the wrapper class tuple
 A key file can contain keys for different APIs or these keys can be stored in
 different files. Only the first line starting with the key name will be read by
 each API wrapper. The package will look for the equal (`=`) sign as the name/value
-separator and any other characters in the tuple `common.NAME_VALUE_SEPS`.
+separator, other characters in the tuple `common.NAME_VALUE_SEPS` or the space
+character.
 
 Pass API key files as `APIWrapper: path` pairs in a `dict` where path is a `pathlib.Path`
 instance pointing to the file:

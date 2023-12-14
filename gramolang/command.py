@@ -9,8 +9,8 @@ from logging import getLogger
 from inspect import isclass
 
 from .common import (
-    ESCAPE_CHAR, ARGUMENTS_SEP, NONE_ARG,
-    parse_str_to_bool, split_name_arguments)
+    ESCAPE_CHAR, SPACE_SEP, NONE_ARG,
+    parse_str_to_bool, parse_name_value)
 
 
 # Names for system command
@@ -83,7 +83,7 @@ class BaseCommand:
     def parse(cls, arguments: str, name: str | None = None):
         # TODO: Ignore anything after comment char (#)?
         arguments = arguments.strip()
-        arguments = tuple((a for a in arguments.split(sep=ARGUMENTS_SEP) if a))
+        arguments = tuple((a for a in arguments.split(sep=SPACE_SEP) if a))
         return cls.parse_args(*arguments, name=name)
 
 
@@ -218,7 +218,7 @@ class Commands:
     #     return self[name](*args, name=name, **kwargs)
 
     def parse(self, string: str) -> BaseCommand:
-        name, arguments = split_name_arguments(string)
+        name, arguments = parse_name_value(string, single_name=True)
         if arguments is None: return self[name](name=name)
         else: return self[name].parse(arguments=arguments, name=name)
 

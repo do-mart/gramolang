@@ -25,9 +25,9 @@ COMMAND_CHAR = ':'
 ESCAPE_CHAR = '\\'
 
 # Separators
-ARGUMENTS_SEP = ' '
-NAME_VALUE_SEPS = ('=', ' ', ':')
-NAME_VALUE_SEPS_STR = ''.join(NAME_VALUE_SEPS)
+SPACE_SEP = ' '
+NAME_VALUE_SEPS = ('=', ':')
+#NAME_VALUE_SEPS_STR = ''.join(NAME_VALUE_SEPS)
 
 # Sentinel value for no argument (when None is a possible value)
 NONE_ARG = object()
@@ -116,17 +116,6 @@ def join_none(
     return sep.join(tuple(str(v) for v in (value, *values) if v is not None))
 
 
-def split_name_arguments(string):
-    i = len(string)
-    for c in NAME_VALUE_SEPS:
-        new_i = string.find(c)
-        if new_i != -1 and new_i < i: i = new_i
-    if i != len(string):
-        return string[:i], string[i:].lstrip(NAME_VALUE_SEPS_STR)
-    else:
-        return string, None
-
-
 # Text formatting
 # ---------------
 
@@ -200,36 +189,78 @@ def print_error(
         file=file)
 
 
+# Parser/splitter for commands and text variables attributions
+# ------------------------------------------------------------
+
+def parse_name_value(string, single_name=False) -> tuple[str | None, str | None]:
+    """Parse name/value pair or command/arguments pair"""
+
+    string = string.strip()
+    if not string: return '', ''
+
+    sep = None
+    i = len(string)
+    for c in NAME_VALUE_SEPS:
+        new_i = string.find(c)
+        if new_i != -1 and new_i < i:
+            sep = c
+            i = new_i
+
+    name, value = '', ''
+    if sep:
+        name, _, value = string.partition(sep)
+    elif SPACE_SEP in string:
+        name, _, value = string.partition(SPACE_SEP)
+    else:
+        if single_name:
+            name = string
+        else:
+            value = string
+
+    name = name.rstrip() if name != '' else None
+    value = value.lstrip() if value != '' else None
+
+    return name, value
+
+    # if i != len(string):  #     return string[:i], string[i:].lstrip(NAME_VALUE_SEPS_STR)  # else:  #     return string, None
+
+
 # Environment variables and files
 # -------------------------------
 
-def get_file_variable(name: str, path: Path, default=None):
+def get_file_variable(
+        path: Path, name: str | None = None, default: str | None = None):
     """Get the value of a variable in a file or return default value.
 
     The key must be writen in the form name=key on a single line. Only the
     first line starting with name will be read. The equal (=) signe can be
     replaced by any character in NAME_VALUE_SEPS.
+
+    If name is None, use the first value not in a name=value attribution.
     """
     if not isinstance(path, Path): path = Path(path)
     if not path.is_file():
         raise FileNotFoundError(f"API key file doesn't exist: {path}")
     with open(path, 'r') as path:
         for line in path:
-            line = line.strip()
-            if line.startswith(name): return split_name_arguments(line)[1]
+            if line.lstrip().startswith(COMMENT_CHAR): continue
+            n, value = parse_name_value(line)
+            if name is None and n is None: return value
+            elif n == name: return value
     return default
 
 
-def get_file_environ_variable(name: str, file: Path | str = None):
-    """Get the value of a variable in a file or in an environment variable."""
-    if file is not None:
-        value = get_file_variable(name=name, path=file)
-        if value is not None: return value
-        else: raise KeyError(f"Cannot find variable '{name}' in file: {file}")
-    else:
-        if name in environ: return environ[name]
-        else:
-            raise KeyError(f"Environment variable '{name}' doesn't exist.")
+# DEPRECATED
+# def get_file_environ_variable(name: str, file: Path | str = None):
+#     """Get the value of a variable in a file or in an environment variable."""
+#     if file is not None:
+#         value = get_file_variable(name=name, path=file)
+#         if value is not None: return value
+#         else: raise KeyError(f"Cannot find variable '{name}' in file: {file}")
+#     else:
+#         if name in environ: return environ[name]
+#         else:
+#             raise KeyError(f"Environment variable '{name}' doesn't exist.")
 
 
 # TODO: TimePrinter must use call back for printing since Console define its
