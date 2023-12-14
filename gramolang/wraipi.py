@@ -50,16 +50,15 @@ class APIWrapper:
             self.api_key = api_key
         else:
             if api_key_file is not None:
-                for name in self.API_KEY_NAMES:
+                for name in self.API_KEY_NAMES + (None,):
                     api_key = get_file_variable(
-                        name=name, path=api_key_file, default=None)
+                        path=api_key_file, name=name, default=None)
                     if api_key:
                         self.logger.debug(
                             f"Setting API key from file with name {name}")
                         self.api_key_name = name
                         self.api_key = api_key
                         break
-                # TODO: Also check for single value on a line?
                 if self.api_key is None: raise KeyError(
                     f"Cannot find API key: "
                     f"No variable {' or '.join(self.API_KEY_NAMES)} "
