@@ -35,16 +35,15 @@ assignment on a single line. Use either the name of the API wrapper class
 (default), the underlying organisation's API key name (both names are stored
 in the wrapper class tuple `API_KEY_NAMES`) or the key value alone on the first
 non-commented line. A key file can contain keys for different APIs or these
-keys can be stored in different files, but a file can contain only one unnamed
-key value on a single line.
+keys can be stored in different files.
 
-    # Example of value assignement in an API key file
+    # Example of an API key assignement in a file
     OpenAIWrapper=apikeyvalue
 
     # Using the organisation's API key name works as well
     OPENAI_API_KEY=apikeyvalue
 
-    # Or even the key value alone
+    # Or even the key value directly
     apikeyvalue
 
 Pass API key files as `APIWrapper: path` pairs in a `dict` where path is a

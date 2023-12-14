@@ -191,6 +191,9 @@ def print_error(
 
 # Parser/splitter for commands and text variables attributions
 # ------------------------------------------------------------
+def index_partition(string: str, i: int) -> tuple[str, str]:
+    return string[:i], string[i + 1:]
+
 
 def parse_name_value(string, single_name=False) -> tuple[str | None, str | None]:
     """Parse name/value pair or command/arguments pair"""
@@ -206,27 +209,25 @@ def parse_name_value(string, single_name=False) -> tuple[str | None, str | None]
             sep = c
             i = new_i
 
-    name, value = '', ''
     if sep:
-        name, _, value = string.partition(sep)
-    elif SPACE_SEP in string:
-        name, _, value = string.partition(SPACE_SEP)
+        name, value = index_partition(string, i)
     else:
-        if single_name:
-            name = string
-        else:
-            value = string
+        i = string.find(SPACE_SEP)
+        if i != -1: name, value = index_partition(string, i)
+        elif single_name: name, value = string, ''
+        else: name, value = '', string
 
     name = name.rstrip() if name != '' else None
     value = value.lstrip() if value != '' else None
 
     return name, value
 
-    # if i != len(string):  #     return string[:i], string[i:].lstrip(NAME_VALUE_SEPS_STR)  # else:  #     return string, None
-
 
 # Environment variables and files
 # -------------------------------
+
+# TODO: See if I only what to allow equal sign for name-value separator
+#       or all other characters.
 
 def get_file_variable(
         path: Path, name: str | None = None, default: str | None = None):
