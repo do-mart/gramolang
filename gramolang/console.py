@@ -1,5 +1,8 @@
 """
 Interactive Console
+
+TODO: Fix TimePrinter to use console print method and not print directly to
+      stdout with print and possibly move here.
 """
 
 from typing import TextIO
