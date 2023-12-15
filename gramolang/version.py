@@ -1,4 +1,6 @@
-"""Versioning"""
+"""
+Versioning
+"""
 
 
 VERSIONS: dict[str:str] = {

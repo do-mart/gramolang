@@ -4,9 +4,6 @@ Wrapper of AI Organizations' API
 Layer of abstraction over each organization's API to provide the same interface
 for all models.
 
-TODO: Change the mechanics for passing keys? Use Enum? API_KEY_NAME?
-      All the above?
-
 """
 import logging
 from typing import Any, Sequence

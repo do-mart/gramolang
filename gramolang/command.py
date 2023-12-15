@@ -1,7 +1,5 @@
 """
 Text command interface
-
-TODO: Find better name for the command type/categories
 """
 
 from typing import Any, Sequence
@@ -40,11 +38,8 @@ def write_name_summary(names: Sequence[str], summary: str):
 # -------------------
 
 
-class BaseCommand:
-    """Base class for all commands
-
-    Note: inheritable-only class, it is not meant to be instantiated directly.
-    """
+class Command:
+    """Inheritable-only class for all commands"""
 
     NAMES = tuple()
 
@@ -81,52 +76,40 @@ class BaseCommand:
 
     @classmethod
     def parse(cls, arguments: str, name: str | None = None):
-        # TODO: Ignore anything after comment char (#)?
+        # TODO: Ignore everything after comment char (#)?
         arguments = arguments.strip()
         arguments = tuple((a for a in arguments.split(sep=SPACE_SEP) if a))
         return cls.parse_args(*arguments, name=name)
 
 
-class BaseEmptyCommand(BaseCommand):
-    """Base class for a command without parameters
-
-    Note: inheritable-only class, it is not meant to be instantiated directly.
-    """
+class EmptyCommand(Command):
+    """Inheritable-only class for a command without parameters"""
     def __init__(self, *, name: str | None = None) -> None:
         super().__init__(name=name)
 
 
-class BaseUnaryCommand(BaseCommand):
-    """Base class for a command with one or no parameter
-
-    Note: inheritable-only class, it is not meant to be instantiated directly.
-    """
+class UnaryCommand(Command):
+    """Inheritable-only class for a command with one or no parameter"""
     def __init__(self, arg=NONE_ARG, name: str | None = None) -> None:
         if arg is NONE_ARG: super().__init__(name=name)
         else: super().__init__(arg, name=name)
 
     @classmethod
     def parse(cls, arguments: str, name: str | None = None):
-        # TODO: Ignore anything after comment char (#)?
+        # TODO: Ignore everything after comment char (#)?
         arguments = arguments.strip()
         if arguments: return cls.parse_args(arguments, name=name)
         else: return cls(name=name)
 
 
-class BaseUnaryRequiredCommand(BaseCommand):
-    """Base class for a command with one required argument
-
-    Note: inheritable-only class, it is not meant to be instantiated directly.
-    """
+class UnaryRequiredCommand(Command):
+    """Inheritable-only class for a command with one required argument"""
     def __init__(self, arg, name: str | None = None) -> None:
         super().__init__(arg, name=name)
 
 
-class BaseToggleCommand(BaseUnaryCommand):
-    """Base class for a toggle command
-
-    Note: inheritable-only class, it is not meant to be instantiated directly.
-    """
+class ToggleCommand(UnaryCommand):
+    """Inheritable-only class for a toggle command"""
     def __init__(
             self, set_value: bool | None = None, name: str | None = None
             ) -> None:
@@ -152,13 +135,13 @@ class BaseToggleCommand(BaseUnaryCommand):
 
 
 class Commands:
-    """Command interface for an object class"""
+    """Collection of commands to provide an interface for another class"""
 
     def __init__(
             self, cls_to_target: dict[type: Any], *args):
         self.logger = module_logger.getChild(self.__class__.__name__)
         self._class_to_target: dict[type: Any] = {}
-        self._names_to_class: dict[str: type[BaseCommand]] = {}
+        self._names_to_class: dict[str: type[Command]] = {}
         for d in (cls_to_target,) + args:
             for cls in d:
                 if cls in self._class_to_target:
@@ -176,22 +159,22 @@ class Commands:
     def __contains__(self, key) -> bool:
         if isclass(key):
             return key in self._class_to_target
-        if isinstance(key, BaseCommand):
+        if isinstance(key, Command):
             return type(key) in self._class_to_target
         return key.lower() in self._names_to_class
 
-    def __getitem__(self, key) -> type[BaseCommand]:
+    def __getitem__(self, key) -> type[Command]:
         if isclass(key):
             if key in self._class_to_target:
                 return key
             else:
                 raise CommandClassError(
                     f"No command class '{key.__name__}' in collection")
-        if isinstance(key, BaseCommand):
+        if isinstance(key, Command):
             cls = type(key)
             if cls in self._class_to_target:
                 return cls
-            elif cls is not BaseCommand:
+            elif cls is not Command:
                 raise CommandClassError(
                     f"Command class '{cls.__name__}' of "
                     f"instance '{key}' not in collection")
@@ -213,16 +196,12 @@ class Commands:
     def write_command_help(self, key) -> str:
         return write_name_summary(self[key].NAMES, self.summary(key))
 
-    # Not in use
-    # def parse_args(self, name: str, *args, **kwargs) -> BaseCommand:
-    #     return self[name](*args, name=name, **kwargs)
-
-    def parse(self, string: str) -> BaseCommand:
+    def parse(self, string: str) -> Command:
         name, arguments = parse_name_value(string, single_name=True)
         if arguments is None: return self[name](name=name)
         else: return self[name].parse(arguments=arguments, name=name)
 
-    def instance_execute(self, instance, command: BaseCommand):
+    def instance_execute(self, instance, command: Command):
         target = self._class_to_target[type(command)]
         self.logger.debug(f"Execute {command} with target {target.__repr__()} on {instance}.")
         if callable(target):

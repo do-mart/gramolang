@@ -1,6 +1,5 @@
 """
 Even more automatic completions
-
 """
 
 from logging import getLogger

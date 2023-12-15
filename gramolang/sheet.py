@@ -22,7 +22,7 @@ from .common import (
     now_delta, write_now_delta, join_none, rmark,
     write_exception, write_error)
 from .wraipi import APIWrapper
-from .command import BaseEmptyCommand
+from .command import EmptyCommand
 from .chat import Chat, CompleteCommand
 
 
@@ -81,7 +81,7 @@ def _complete_col(
         try:
 
             # Create command instance
-            if issubclass(chat.commands[command_names[j]], BaseEmptyCommand):
+            if issubclass(chat.commands[command_names[j]], EmptyCommand):
                 command = chat.commands[command_names[j]](
                     name=command_names[j])
             else:

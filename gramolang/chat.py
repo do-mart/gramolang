@@ -19,7 +19,7 @@ from .common import (
     Role, Message)
 from .wraipi import APIWrapper, MODEL_TO_APIWRAPPER
 from .command import (
-    BaseCommand, BaseEmptyCommand, BaseUnaryCommand, BaseUnaryRequiredCommand,
+    Command, EmptyCommand, UnaryCommand, UnaryRequiredCommand,
     Commands)
 
 
@@ -39,7 +39,7 @@ class Completion(NamedTuple):
 # Commands
 # --------
 
-class UserCommand(BaseUnaryRequiredCommand):
+class UserCommand(UnaryRequiredCommand):
     """Append user message (i.e. message with user role)."""
     NAMES = ('user', )
 
@@ -47,7 +47,7 @@ class UserCommand(BaseUnaryRequiredCommand):
         super().__init__(str(arg), name=name)
 
 
-class SystemCommand(BaseUnaryCommand):
+class SystemCommand(UnaryCommand):
     """Append system message (i.e. message with system role)."""
     NAMES = ('system', 'sys', 'system_role', 'sys_role')
 
@@ -56,7 +56,7 @@ class SystemCommand(BaseUnaryCommand):
         else: super().__init__(name=name)
 
 
-class CompleteCommand(BaseCommand):
+class CompleteCommand(Command):
     """Complete chat/conversation and append response as assistant message."""
     NAMES = ('assistant', 'complete')
 
@@ -64,7 +64,7 @@ class CompleteCommand(BaseCommand):
         super().__init__(*args, name=name, **kwargs)
 
 
-class MaxTokensCommand(BaseUnaryCommand):
+class MaxTokensCommand(UnaryCommand):
     """Set/get maximum number of tokens to generate for chat completion."""
     NAMES = ('max_tokens', 'max_token')
 
@@ -75,7 +75,7 @@ class MaxTokensCommand(BaseUnaryCommand):
         super().__init__(arg, name=name)
 
 
-class TemperatureCommand(BaseUnaryCommand):
+class TemperatureCommand(UnaryCommand):
     """Set/get sampling temperature for chat completion."""
     NAMES = TEMPERATURE_NAMES
 
@@ -86,7 +86,7 @@ class TemperatureCommand(BaseUnaryCommand):
         super().__init__(arg, name=name)
 
 
-class TopPCommand(BaseUnaryCommand):
+class TopPCommand(UnaryCommand):
     """Set/get top probability mass of tokens to consider."""
     NAMES = TOP_P_NAMES
 
@@ -97,7 +97,7 @@ class TopPCommand(BaseUnaryCommand):
         super().__init__(arg, name=name)
 
 
-class ChoicesCommand(BaseUnaryCommand):
+class ChoicesCommand(UnaryCommand):
     """Set/get top probability mass of tokens to consider."""
     NAMES = ('choices',)
 
@@ -108,7 +108,7 @@ class ChoicesCommand(BaseUnaryCommand):
         super().__init__(arg, name=name)
 
 
-class TimeoutCommand(BaseUnaryCommand):
+class TimeoutCommand(UnaryCommand):
     """Set/get time in seconds before chat completion times out."""
     NAMES = ('timeout',)
 
@@ -119,7 +119,7 @@ class TimeoutCommand(BaseUnaryCommand):
         super().__init__(arg, name=name)
 
 
-class RetriesCommand(BaseUnaryCommand):
+class RetriesCommand(UnaryCommand):
     """Set/get additional retries attempts on error."""
     NAMES = ('retries',)
 
@@ -129,7 +129,7 @@ class RetriesCommand(BaseUnaryCommand):
         else: super().__init__(name=name)
 
 
-class ClearCommand(BaseEmptyCommand):
+class ClearCommand(EmptyCommand):
     """Clear messages history."""
     NAMES = ('clear',)
 
@@ -137,7 +137,7 @@ class ClearCommand(BaseEmptyCommand):
         super().__init__(name=name)
 
 
-class ResetCommand(BaseEmptyCommand):
+class ResetCommand(EmptyCommand):
     """Reset all agent parameters and clear messages history."""
     NAMES = ('reset',)
 
@@ -145,7 +145,7 @@ class ResetCommand(BaseEmptyCommand):
         super().__init__(name=name)
 
 
-class ModelCommand(BaseUnaryCommand):
+class ModelCommand(UnaryCommand):
     """Set/get model for chat completion."""
     NAMES = ('model',)
 
@@ -421,7 +421,7 @@ class Chat:
         ClearCommand: clear, ResetCommand: reset,
         ModelCommand: model})
 
-    def execute(self, command: type | BaseCommand | str):
+    def execute(self, command: type | Command | str):
         self.commands.instance_execute(self, command)
 
     def parse_execute(self, string: str):

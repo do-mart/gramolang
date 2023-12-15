@@ -14,7 +14,7 @@ from .common import (
     COMMAND_CHAR, NONE_ARG, NAME_VALUE_SEPS, write_error, TimePrinter)
 from .command import (
     CommandClassError,
-    BaseCommand, BaseEmptyCommand, BaseUnaryCommand, BaseToggleCommand,
+    Command, EmptyCommand, UnaryCommand, ToggleCommand,
     Commands)
 from .wraipi import APIWrapper
 from .chat import (
@@ -29,7 +29,7 @@ from .chat import (
 # Commands
 # --------
 
-class MessagesCommand(BaseEmptyCommand):
+class MessagesCommand(EmptyCommand):
     """Write all messages with role"""
     NAMES = ('messages', 'mess')
 
@@ -37,7 +37,7 @@ class MessagesCommand(BaseEmptyCommand):
         super().__init__(name=name)
 
 
-class InfosCommand(BaseToggleCommand):
+class InfosCommand(ToggleCommand):
     """Toggle write more information about responses and status."""
     NAMES = ('infos', 'i', 'info')
 
@@ -45,7 +45,7 @@ class InfosCommand(BaseToggleCommand):
         super().__init__(set_value=set_value, name=name)
 
 
-class RawCommand(BaseToggleCommand):
+class RawCommand(ToggleCommand):
     """Toggle write raw response object and other data structures."""
     NAMES = ('raw',)
 
@@ -53,7 +53,7 @@ class RawCommand(BaseToggleCommand):
         super().__init__(set_value=set_value, name=name)
 
 
-class WrapCommand(BaseToggleCommand):
+class WrapCommand(ToggleCommand):
     """Toggle wrap lines."""
     NAMES = ('wrap',)
 
@@ -61,7 +61,7 @@ class WrapCommand(BaseToggleCommand):
         super().__init__(set_value=set_value, name=name)
 
 
-class WidthCommand(BaseUnaryCommand):
+class WidthCommand(UnaryCommand):
     """Set width for text wrap, write value if no argument."""
     NAMES = ('width',)
 
@@ -70,7 +70,7 @@ class WidthCommand(BaseUnaryCommand):
         else: super().__init__(name=name)
 
 
-class StopCommand(BaseEmptyCommand):
+class StopCommand(EmptyCommand):
     """Stop console and return."""
     NAMES = ('stop', 'q', 'quit', 'exit')
 
@@ -78,7 +78,7 @@ class StopCommand(BaseEmptyCommand):
         super().__init__(name=name)
 
 
-class HelpCommand(BaseEmptyCommand):
+class HelpCommand(EmptyCommand):
     """Write help message."""
     NAMES = ('help', 'h', '?')
 
@@ -248,7 +248,7 @@ class Console:
         StopCommand: stop,
         HelpCommand: write_help})
 
-    def execute(self, command: type | BaseCommand | str):
+    def execute(self, command: type | Command | str):
         self.commands.instance_execute(self, command)
 
     def parse_execute(self, string: str):
