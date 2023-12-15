@@ -24,34 +24,44 @@ Since APIs from different organizations can be used interchangeably, a user can
 provide multiple keys if he intends to use the APIs of multiple organizations.
 
 ### 1. Providing key values directly
-Past API keys as `APIWrapper: 'apikeyvalue'` pairs in a `dict`: 
+Past API keys as `APIWrapper: 'apikeyvalue'` pairs in a `dict`:
 
-    >>> from gramolang import OpenAIWrapper
-    >>> api_keys = {OpenAIWrapper: 'apikeyvalue'}
+```python
+from gramolang import OpenAIWrapper
+api_keys = {OpenAIWrapper: 'apikeyvalue'}
+```
 
 ### 2. Providing keys in a file
-When using a file, write the key in the form of a `name=apikeyvalue` variable
-assignment on a single line. Use either the name of the API wrapper class
-(default), the underlying organisation's API key name (both names are stored
-in the wrapper class tuple `API_KEY_NAMES`) or the key value alone on the first
+When using a file, write the key in the form of a `name=apikeyvalue` assignment
+on a single line. Use either the name of the API wrapper  class (default), the
+underlying organisation's API key name (see the wrapper class tuple
+`API_KEY_NAMES` for all possible names) or the key value alone on the first
 non-commented line. A key file can contain keys for different APIs or these
 keys can be stored in different files.
 
-    # Example of an API key assignement in a file
-    OpenAIWrapper=apikeyvalue
+```shell
+# Example of an API key assignment in a file
+OpenAIWrapper=apikeyvalue
 
-    # Using the organisation's API key name works as well
-    OPENAI_API_KEY=apikeyvalue
+# Using the organisation's API key name works as well
+OPENAI_API_KEY=apikeyvalue
 
-    # Or even the key value directly
-    apikeyvalue
+# Or even the key value directly
+apikeyvalue
+```
 
 Pass API key files as `APIWrapper: path` pairs in a `dict` where path is a
 `pathlib.Path` instance pointing to the file:
 
-    >>> from pathlib import Path
-    >>> from gramolang import OpenAIWrapper 
-    >>> api_key_files = {OpenAIWrapper: Path('.keys/api-key-file')}
+```python
+from pathlib import Path
+from gramolang import OpenAIWrapper
+api_key_files = {OpenAIWrapper: Path('.keys/api-key-file')}
+```
+
+If there is an API key name for the underlying The name of thAPI key are also stored in the wrapper class tuple
+`API_KEY_NAMES`.
+
 
 ### 3. Accessing keys from the environment
 If no key is provided, either directly or with a file, the package will look
