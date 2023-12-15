@@ -3,7 +3,8 @@
 from logging import getLogger, basicConfig, INFO, DEBUG
 from pathlib import Path
 
-from gramolang import NAME_VERSION as GRAMOLANG_NAME_VERSION, OpenAIWrapper
+from gramolang import OpenAIWrapper
+from gramolang.common import NAME_VERSION as GRAMOLANG_NAME_VERSION
 from gramolang.auto import watch_pool_files
 
 

@@ -9,8 +9,9 @@ from sys import stdin, stdout
 import readline
 import textwrap
 
-from . import NAME_VERSION as PACKAGE_NAME_VERSION
-from .common import COMMAND_CHAR, NONE_ARG, NAME_VALUE_SEPS, write_error, TimePrinter
+from .common import (
+    NAME_VERSION as PACKAGE_NAME_VERSION,
+    COMMAND_CHAR, NONE_ARG, NAME_VALUE_SEPS, write_error, TimePrinter)
 from .command import (
     CommandClassError,
     BaseCommand, BaseEmptyCommand, BaseUnaryCommand, BaseToggleCommand,

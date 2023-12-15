@@ -21,8 +21,8 @@ from .common import (
     COMMENT_CHAR,
     now_delta, write_now_delta, join_none, rmark,
     write_exception, write_error)
-from .command import BaseEmptyCommand
 from .wraipi import APIWrapper
+from .command import BaseEmptyCommand
 from .chat import Chat, CompleteCommand
 
 

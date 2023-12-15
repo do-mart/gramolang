@@ -1,6 +1,6 @@
 """Print OpenAI models based on API key"""
 
-from logging import getLogger, DEBUG, basicConfig
+from logging import getLogger, DEBUG, INFO, basicConfig
 from pathlib import Path
 from datetime import datetime
 from tabulate import tabulate

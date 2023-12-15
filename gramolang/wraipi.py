@@ -18,7 +18,6 @@ from openai import OpenAI, RateLimitError, APITimeoutError
 
 from .common import Message, get_file_variable, retry
 
-
 # Logging
 module_logger = getLogger(__name__)
 
@@ -55,7 +54,8 @@ class APIWrapper:
                         path=api_key_file, name=name, default=None)
                     if api_key:
                         self.logger.debug(
-                            f"Setting API key from file with name {name}")
+                            f"Setting API key from file '{api_key_file}' "
+                            f"with variable name {repr(name)}")
                         self.api_key_name = name
                         self.api_key = api_key
                         break

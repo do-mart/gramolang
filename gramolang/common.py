@@ -15,6 +15,12 @@ from datetime import datetime, timedelta
 from random import random
 from threading import Thread, Event
 
+from .version import VERSION
+
+
+NAME = 'Gramolang'
+NAME_VERSION = f"{NAME} v{VERSION}"
+
 # Common names substitutions
 TEMPERATURE_NAMES = ('temperature', 'temp')
 TOP_P_NAMES = ('top_p',)
@@ -417,3 +423,4 @@ def retry(
         return wrapper
 
     return decorate
+
