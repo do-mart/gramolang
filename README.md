@@ -63,8 +63,7 @@ api_key_files = {OpenAIWrapper: Path('.keys/api-key-file')}
 ### 3. Accessing keys from the environment
 If no key is provided, either directly or with a file, the package will look
 into the process environment with `os.environ`. The name of the environment
-variable is the same as the name used in the api key file and must equals one
-of the names in `API_KEY_NAMES`.
+variable is the same as the names used in the api key file.
 
 ### Errors or exceptions
 The package will raise an exception if no key value can be retrieved with one
