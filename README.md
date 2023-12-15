@@ -41,10 +41,12 @@ these keys can be stored in different files.
 ```shell
 # Example of an API key assignment in a file
 OpenAIWrapper=apikeyvalue
-
+```
+```shell
 # Using the organisation's API key name works as well
 OPENAI_API_KEY=apikeyvalue
-
+```
+```shell
 # Or even the key value directly
 apikeyvalue
 ```
