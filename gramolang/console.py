@@ -1,12 +1,11 @@
 """
 Interactive Console
-
-TODO: Fix TimePrinter to use console print method and not print directly to
-      stdout with print and possibly move here.
 """
 
 from typing import TextIO
+from concurrent.futures import ThreadPoolExecutor, wait
 from pathlib import Path
+from datetime import datetime
 
 from sys import stdin, stdout
 import readline
@@ -14,7 +13,8 @@ import textwrap
 
 from .common import (
     NAME_VERSION as PACKAGE_NAME_VERSION,
-    COMMAND_CHAR, NONE_ARG, NAME_VALUE_SEPS, write_error, TimePrinter)
+    COMMAND_CHAR, NONE_ARG, NAME_VALUE_SEPS,
+    now_delta, write_timedelta, write_error)
 from .command import (
     CommandClassError,
     Command, EmptyCommand, UnaryCommand, ToggleCommand,
@@ -27,6 +27,12 @@ from .chat import (
     TimeoutCommand, RetriesCommand,
     ClearCommand, ResetCommand, ModelCommand,
     Chat)
+
+
+# Basic helpers
+# -------------
+
+def write_backspaces(string: str) -> str: return '\b \b' * len(string)
 
 
 # Commands
@@ -138,7 +144,8 @@ class Console:
         if not self._running: return
         print(*args, **kwargs, end=end, file=self.OUTPUT_FILE, flush=True)
 
-    def write_line(self, *args, **kwargs): self.write(*args, **kwargs, end='\n')
+    def write_line(self, *args, **kwargs):
+        self.write(*args, **kwargs, end='\n')
 
     def write_value(self, name: str, value):
         self.write_line(f"{name} {NAME_VALUE_SEPS[0]}", value.__repr__())
@@ -269,61 +276,73 @@ class Console:
         self.write_line(f"{PACKAGE_NAME_VERSION} {self.NAME}")
         self.write_line(f"Model: {self.chat.model()}")
 
-        while self._running:
+        # Executor for completion thread
+        with ThreadPoolExecutor(max_workers=1) as executor:
 
-            # Prompt for input
-            user_input = input(self.INPUT_PROMPT)
+            # Main prompt/command and response loop
+            while self._running:
 
-            # Process input for command or message
-            if user_input.startswith(COMMAND_CHAR):
-                command = user_input[1:]
-                try: self.parse_execute(command)
-                except CommandClassError:
-                    self.write_line("Invalid command name")
-                except Exception as e:
-                    self.write_line("Invalid command:", e)
-                continue
+                # Prompt for input
+                user_input = input(self.INPUT_PROMPT)
 
-            # If not a command, add user message
-            self.chat.append_user_message(user_input)
+                # Process input for command or message
+                if user_input.startswith(COMMAND_CHAR):
+                    command = user_input[1:]
+                    try: self.parse_execute(command)
+                    except CommandClassError:
+                        self.write_line("Invalid command name")
+                    except Exception as e:
+                        self.write_line("Invalid command:", e)
+                    continue
 
-            # Complete request
-            # TODO: Add a way to cancel completion, perhaps with a try to catch cancel signal
-            #       (implement after progressive completion).
-            time_printer = TimePrinter(
-                label=self._RESPONSE_TIME_LABEL, interval=self._INTERVAL,
-                ndigits=self._NDIGITS, clear_line=not self._infos)
-            time_printer.start()
+                # If not a command, add user message
+                self.chat.append_user_message(user_input)
 
-            try: request, response = self.chat.complete(append_completion=True)
-            except Exception as e:
-                self.write_line(write_error(e))
-                continue
-            finally:
-                time_printer.stop()
-                time_printer.join()
+                # Complete request and print timer
+                # TODO: Implement completion cancel mechanism
+                start = datetime.now()
+                future = executor.submit(
+                    self.chat.complete, append_completion=True)
 
-            # Print response
-            if self._raw:
-                self.write_line(f"request = {request}")
-                self.write_line(f"response = {response}")
-            else:
-                for i, choice in enumerate(response.choices):
-                    if len(response.choices) > 1: self.write_line(f"\nChoice {i}:")
-                    if self._wrap:
-                        for line in textwrap.wrap(choice.message.content, self._width):
-                            self.write_line(line)
-                    else: self.write_line(choice.message.content)
+                time_delta_line = ''
+                while not future.done():
+                    time_delta = now_delta(start)
+                    self.write(write_backspaces(time_delta_line))
+                    time_delta_line = (
+                        f"{self._RESPONSE_TIME_LABEL}"
+                        f"{write_timedelta(time_delta, self._NDIGITS)}")
+                    self.write(time_delta_line)
+                    wait((future,), timeout=self._INTERVAL)
+                self.write(write_backspaces(time_delta_line))
 
-            # Print information
-            if self._infos:
-                self.write_line(f"Finish reason: {response.choices[0].finish_reason}")
-                counts = self.chat.messages_counts()
-                self.write_line("Model:", response.model)
-                self.write_line(
-                    f"Messages: {len(self.chat.messages)} ("
-                    f"{' + '.join(tuple(str(c) + ' ' + r for r, c in counts.items()))})")
-                self.write_line(
-                    f"Usage: {response.usage.total_tokens} tokens ("
-                    f"{response.usage.prompt_tokens} prompt + "
-                    f"{response.usage.completion_tokens} completion)")
+                if future.exception():
+                    self.write_line(write_error(future.exception()))
+                    continue
+                else:
+                    request, response = future.result()
+
+                # Print response
+                if self._raw:
+                    self.write_line(f"request = {request}")
+                    self.write_line(f"response = {response}")
+                else:
+                    for i, choice in enumerate(response.choices):
+                        if len(response.choices) > 1: self.write_line(f"\nChoice {i}:")
+                        if self._wrap:
+                            for time_delta_line in textwrap.wrap(choice.message.content, self._width):
+                                self.write_line(time_delta_line)
+                        else: self.write_line(choice.message.content)
+
+                # Print information
+                if self._infos:
+                    self.write_line(time_delta_line)
+                    self.write_line(f"Finish reason: {response.choices[0].finish_reason}")
+                    counts = self.chat.messages_counts()
+                    self.write_line("Model:", response.model)
+                    self.write_line(
+                        f"Messages: {len(self.chat.messages)} ("
+                        f"{' + '.join(tuple(str(c) + ' ' + r for r, c in counts.items()))})")
+                    self.write_line(
+                        f"Usage: {response.usage.total_tokens} tokens ("
+                        f"{response.usage.prompt_tokens} prompt + "
+                        f"{response.usage.completion_tokens} completion)")

@@ -8,12 +8,11 @@ from enum import Enum, StrEnum, unique
 from functools import wraps
 
 from pathlib import Path
-from os import environ, listdir
+from os import listdir
 from shutil import rmtree
 from time import sleep
 from datetime import datetime, timedelta
 from random import random
-from threading import Thread, Event
 
 from .version import VERSION
 
@@ -33,7 +32,6 @@ ESCAPE_CHAR = '\\'
 # Separators
 SPACE_SEP = ' '
 NAME_VALUE_SEPS = ('=', ':')
-#NAME_VALUE_SEPS_STR = ''.join(NAME_VALUE_SEPS)
 
 # Sentinel value for no argument (when None is a possible value)
 NONE_ARG = object()
@@ -108,9 +106,6 @@ class FileType(str, Enum):
 # Very basic stuff
 # ----------------
 
-def write_backspaces(string: str) -> str: return '\b \b' * len(string)
-
-
 def parse_str_to_bool(string: str) -> bool:
     if string.lower() in ('0', 'false'): return False
     else: return bool(string)
@@ -140,10 +135,10 @@ def rmark(
     else: return f"{left}{m}"
 
 
-def write_timedelta(d: timedelta | float | int) -> str:
+def write_timedelta(d: timedelta | float | int, ndigits=None) -> str:
     """Write timedelta (duration) in a consistent format"""
     if not isinstance(d, timedelta): d = timedelta(seconds=d)
-    return f"{round(d.total_seconds())}s"
+    return f"{round(d.total_seconds(), ndigits=ndigits)} s"
 
 
 def now_delta(start: datetime, total_seconds=False):
@@ -270,55 +265,6 @@ def get_file_variable(
 #             raise KeyError(f"Environment variable '{name}' doesn't exist.")
 
 
-# TODO: TimePrinter must use call back for printing since Console define its
-#       own print/write method.
-
-class TimePrinter(Thread):
-
-    def __init__(self, label: str = '', interval: float = 1.0, ndigits: int | None = 2,
-            clear_line: bool = False) -> None:
-
-        super().__init__()
-        self._label: str = label  # Label to print with time
-        self._interval: float = interval  # Interval for re-printing
-        self._ndigits: int | None = ndigits  # Number of digits for rounding
-        self.clear_line = clear_line  # Clear line when stopped
-
-        self._stop_request: Event = Event()  # Event for non-blocking wait and stop
-        self._time_delta: timedelta | None = None  # Duration of counter
-
-        self._line: str = ''  # Last printed line
-
-    def erase_line(self) -> None:
-        print(write_backspaces(self._line), end='', flush=True)
-        self._line = ''
-
-    def run(self) -> None:
-
-        start_date_time: datetime = datetime.now()
-
-        while True:
-            self._stop_request.clear()
-            self._time_delta = (datetime.now() - start_date_time).total_seconds()
-            self.erase_line()
-            self._line = f"{self._label}{round(self._time_delta, self._ndigits)} s"
-            print(self._line, end='', flush=True)
-            self._stop_request.wait(self._interval)
-            if self._stop_request.is_set(): break
-
-        if self.clear_line:
-            self.erase_line()
-        else:
-            print(flush=True)
-
-    def stop(self) -> None:
-        self._stop_request.set()
-
-    @property
-    def time_delta(self):
-        return self._time_delta
-
-
 # File/directory functionalities
 # ------------------------------
 
@@ -423,4 +369,3 @@ def retry(
         return wrapper
 
     return decorate
-
