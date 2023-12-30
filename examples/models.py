@@ -21,6 +21,6 @@ sorted_table = (
     for i, model in enumerate(sorted(models, key=lambda m: m.id)))
 
 print()
-print(f"OpenAI models with API key file '{_initialize.API_KEY_FILE.name}'")
+print(f"OpenAI models with API key file '{initialize.API_KEY_FILE.name}'")
 print()
 print(tabulate(sorted_table, headers=headers))

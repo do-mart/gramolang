@@ -1,8 +1,5 @@
 """Common initialization for the example modules"""
 
-# TODO Test/debug examples with hard api key, key in file
-
-
 from pathlib import Path
 from sys import path
 from shlex import split

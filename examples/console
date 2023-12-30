@@ -7,7 +7,6 @@ from gramolang.console import Console
 # Settings
 MODEL = 'gpt-4'
 
-
 # Create and start console
 console = Console()
 console.model(MODEL)
