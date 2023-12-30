@@ -17,6 +17,8 @@ layer of abstraction over the API wrappers.
 
 
 ## API keys
+TODO: update with simplified mechanism
+
 AI organizations' APIs require a key that must be provided before using their
 models or making most calls to their interfaces. A user can provide the key
 value directly, retrieve the key from a file, or from an environment variable.

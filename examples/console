@@ -1,0 +1,14 @@
+#! python3
+"""Executable for interactive console"""
+
+import initialize
+from gramolang.console import Console
+
+# Settings
+MODEL = 'gpt-4'
+
+
+# Create and start console
+console = Console()
+console.model(MODEL)
+console.run()

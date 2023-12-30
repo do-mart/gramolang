@@ -1,16 +1,13 @@
 """Watch directory and pool file for autocomplete"""
 
+
 from logging import getLogger, basicConfig, INFO, DEBUG
 from pathlib import Path
 
-from gramolang import OpenAIWrapper
+import initialize
 from gramolang.common import NAME_VERSION as GRAMOLANG_NAME_VERSION
 from gramolang.auto import watch_pool_files
 
-
-# API keys
-api_key_files = {
-    OpenAIWrapper: Path(__file__).parent / '.keys' / 'openai-api-key-uqam'}
 
 # Settings
 MODEL = 'gpt-3.5-turbo'     # Default model
@@ -34,7 +31,7 @@ else:
 # Start pool
 print(GRAMOLANG_NAME_VERSION)
 watch_pool_files(
-    root_dir=POOL_DIR, api_key_files=api_key_files, model=MODEL,
+    root_dir=POOL_DIR, model=MODEL,
     timeout=TIMEOUT, retries=RETRIES,
     max_files=MAX_FILES, max_chats=MAX_CHATS,
     status_delay=STATUS_DELAY)

@@ -13,7 +13,7 @@ from os import environ
 
 from openai import OpenAI, RateLimitError, APITimeoutError
 
-from .common import Message, get_file_variable, retry
+from .common import Message, retry
 
 # Logging
 module_logger = getLogger(__name__)
@@ -45,35 +45,19 @@ class APIWrapper:
             self.logger.debug(f"Setting API key directly from value")
             self.api_key = api_key
         else:
-            if api_key_file is not None:
-                for name in self.API_KEY_NAMES + (None,):
-                    api_key = get_file_variable(
-                        path=api_key_file, name=name, default=None)
-                    if api_key:
-                        self.logger.debug(
-                            f"Setting API key from file '{api_key_file}' "
-                            f"with variable name {repr(name)}")
-                        self.api_key_name = name
-                        self.api_key = api_key
-                        break
-                if self.api_key is None: raise KeyError(
-                    f"Cannot find API key: "
-                    f"No variable {' or '.join(self.API_KEY_NAMES)} "
-                    f"in file '{api_key_file}'")
-            else:
-                for name in self.API_KEY_NAMES:
+            for name in self.API_KEY_NAMES:
+                self.logger.debug(
+                    "Environment variables:\n" +
+                    '\n'.join((f"{k}: {v}" for k, v in environ.items())))
+                if name in environ:
                     self.logger.debug(
-                        "Environment variables:\n" +
-                        '\n'.join((f"{k}: {v}" for k, v in environ.items())))
-                    if name in environ:
-                        self.logger.debug(
-                            f"Setting API key from environment variable {name}")
-                        self.api_key_name = name
-                        self.api_key = environ[name]
-                        break
-                if self.api_key is None: raise Exception(
-                    f"Missing API key: no value or key file provided, and "
-                    f"no environment variable {' or '.join(self.API_KEY_NAMES)}.")
+                        f"Setting API key from environment variable {name}")
+                    self.api_key_name = name
+                    self.api_key = environ[name]
+                    break
+            if self.api_key is None: raise Exception(
+                f"Missing API key: no value or key file provided, and "
+                f"no environment variable {' or '.join(self.API_KEY_NAMES)}.")
 
 # TODO: integrate a model function directly in the API?
 # TODO: Test the MODELS constant against the available models at runtime?
@@ -147,7 +131,7 @@ class OpenAIWrapper(APIWrapper):
         return request, retry_create_chat_completion()
 
 
-class AnthropicAPIWrapper(APIWrapper):
+class AnthropicWrapper(APIWrapper):
     """Anthropic's API wrapper"""
 
     API_KEY_NAME: str = 'OPENAI_API_KEY'
@@ -167,7 +151,7 @@ class AnthropicAPIWrapper(APIWrapper):
 # ------
 
 MODEL_TO_APIWRAPPER: dict[str: APIWrapper] = {}
-for api_wrapper in (OpenAIWrapper, AnthropicAPIWrapper):
+for api_wrapper in (OpenAIWrapper, AnthropicWrapper):
     for model in api_wrapper.MODELS:
         if model in MODEL_TO_APIWRAPPER:
             raise KeyError(f"Model '{model}' already exists.")

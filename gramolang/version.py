@@ -11,6 +11,7 @@ DESCRIPTIONS: dict[str:str] = {
     '0.6.1': "Integration of a version control system (VCS) and code clean up",
     '0.6.2': "Consolidation and bug fix for API keys retrieval methods",
     '0.6.3': "Simplification of commands nomenclature",
+    '0.6.4': "Simplified API keys implementation and examples modules"
 }
 
 VERSION = list(DESCRIPTIONS)[-1]

@@ -199,6 +199,8 @@ def index_partition(string: str, i: int) -> tuple[str, str]:
 def parse_name_value(string, single_name=False) -> tuple[str | None, str | None]:
     """Parse name/value pair or command/arguments pair"""
 
+    # TODO: Split with shlex??
+
     string = string.strip()
     if not string: return '', ''
 
@@ -222,47 +224,6 @@ def parse_name_value(string, single_name=False) -> tuple[str | None, str | None]
     value = value.lstrip() if value != '' else None
 
     return name, value
-
-
-# Environment variables and files
-# -------------------------------
-
-# TODO: See if I only what to allow equal sign for name-value separator
-#       or all other characters.
-
-def get_file_variable(
-        path: Path, name: str | None = None, default: str | None = None):
-    """Get the value of a variable in a file or return default value.
-
-    The key must be writen in the form name=key on a single line. Only the
-    first line starting with name will be read. The equal (=) signe can be
-    replaced by any character in NAME_VALUE_SEPS.
-
-    If name is None, use the first value not in a name=value attribution.
-    """
-    if not isinstance(path, Path): path = Path(path)
-    if not path.is_file():
-        raise FileNotFoundError(f"API key file doesn't exist: {path}")
-    with open(path, 'r') as path:
-        for line in path:
-            if line.lstrip().startswith(COMMENT_CHAR): continue
-            n, value = parse_name_value(line)
-            if name is None and n is None: return value
-            elif n == name: return value
-    return default
-
-
-# DEPRECATED
-# def get_file_environ_variable(name: str, file: Path | str = None):
-#     """Get the value of a variable in a file or in an environment variable."""
-#     if file is not None:
-#         value = get_file_variable(name=name, path=file)
-#         if value is not None: return value
-#         else: raise KeyError(f"Cannot find variable '{name}' in file: {file}")
-#     else:
-#         if name in environ: return environ[name]
-#         else:
-#             raise KeyError(f"Environment variable '{name}' doesn't exist.")
 
 
 # File/directory functionalities

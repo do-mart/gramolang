@@ -69,6 +69,7 @@ class Command:
 
     @classmethod
     def parse_args(cls, *args: str, name: str | None = None, **kwargs):
+        # TODO: Split/parse with shlex??
         # TODO: Split name=value pair and pass as kwarg
         args = tuple(None if a.lower() in NONE_STRINGS else a for a in args)
         kwargs = {k: None if v.lower() in NONE_STRINGS else v for k, v in kwargs.items()}
@@ -76,6 +77,7 @@ class Command:
 
     @classmethod
     def parse(cls, arguments: str, name: str | None = None):
+        # TODO: Split/parse with shlex??
         # TODO: Ignore everything after comment char (#)?
         arguments = arguments.strip()
         arguments = tuple((a for a in arguments.split(sep=SPACE_SEP) if a))
@@ -96,6 +98,7 @@ class UnaryCommand(Command):
 
     @classmethod
     def parse(cls, arguments: str, name: str | None = None):
+        # TODO: Split/parse with shlex??
         # TODO: Ignore everything after comment char (#)?
         arguments = arguments.strip()
         if arguments: return cls.parse_args(arguments, name=name)
