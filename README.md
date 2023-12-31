@@ -1,6 +1,6 @@
 # gramolang
-High-level package for using large language models (or _grand modèle de language_, as
-one would say in French).
+High-level package for using large language models (or _grand modèle de
+language_, as we would say in French).
 
 
 ## AI Organizations' API Wrapper
@@ -43,8 +43,7 @@ os.environ['OPENAI_API_KEY'] = 'apikeyvalue'
 
 
 ### 2. Providing a key value directly
-A key can be also be provided as an initialization argument to the wrapper
-class:
+A key can be also be passed as an initialization argument to the wrapper class:
 
 ```python
 from gramolang import OpenAIWrapper
