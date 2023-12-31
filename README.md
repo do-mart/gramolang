@@ -74,7 +74,7 @@ time).
 
 
 ## Examples
-The `example` directory contains example modules for specific package
+The `example` directory contains example scripts for specific package
 functionalities:
 
 - `models.py`: Simple script to retrieve OpenAI models based on an API key,
@@ -84,7 +84,6 @@ functionalities:
 - `watch-pool.py`: Script to watch directory and pool files for autocomplete 
   using the `auto.watch_pool_files()` function.
 
-
-- `initialize.py` contains a common initialization script for these modules 
-  that add the package directory in `sys.path` and set API keys in the 
-  environment based on values stored in a file.
+The script `initialize.py` provides common initialization features for the
+other scripts: adding the `gramolang` package directory in `sys.path` and load
+API keys in the environment based on values stored in a file.
