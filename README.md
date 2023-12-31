@@ -44,8 +44,7 @@ os.environ['OPENAI_API_KEY'] = 'apikeyvalue'
 
 ### 2. Providing a key value directly
 A key can be also be provided as an initialization argument to the wrapper
-class (e.g. for testing or debugging purposes, or to override a default
-environment key):
+class:
 
 ```python
 from gramolang import OpenAIWrapper
@@ -65,11 +64,11 @@ chat = Chat(api_keys=api_keys)
 
 ### Errors or exceptions
 The package will raise an exception if no key value can be retrieved with one
-of the two methods mentioned above. If a key is provided directly and in the
-environment, the direct value will be used. If a key is retrieved but its value
-is invalid, an exception may not be raised until the first call to the
-underlying API (e.g. when  trying to complete a conversation for the first
-time).
+of the two methods mentioned above. If both methods are used, the API wrapper
+class will use the key provided directly as an argument. If a key is retrieved
+but its value is invalid, an exception may not be raised until the first call
+to the underlying API (e.g. when  trying to complete a conversation for the
+first time).
 
 
 
@@ -85,5 +84,5 @@ functionalities:
   using the `auto.watch_pool_files()` function
 
 The script `initialize.py` provides common initialization features for the
-other scripts: adding the `gramolang` package directory in `sys.path` and load
-API keys in the environment based on values stored in a file.
+other scripts: adding the `gramolang` package directory in `sys.path` and
+loading API keys in the environment based on values stored in a file.
