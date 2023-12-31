@@ -20,8 +20,8 @@ layer of abstraction over the API wrappers.
 AI organizations' APIs require a key that must be provided before using their
 models or making most calls to their interfaces. A user can provide the key
 value in an environment variable (preferred approach) or directly as an
-argument. Note that multiple keys must be provided when in order to use the
-APIs from different organizations.
+argument. Note that multiple keys must be provided when using APIs from
+different organizations.
 
 ### 1. Providing a key in the environment
 The preferred approach is to provide the key as an environment variable with
