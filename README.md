@@ -46,6 +46,7 @@ os.environ['OPENAI_API_KEY'] = 'apikeyvalue'
 A key can be also be passed as an initialization argument to the wrapper class:
 
 ```python
+# Passing an API key directly to an API wrapper class
 from gramolang import OpenAIWrapper
 api_wrapper = OpenAIWrapper(api_key='apikeyvalue')
 ```
@@ -55,6 +56,7 @@ organizations API. In that case, pass the keys as `APIWrapper: 'apikeyvalue'`
 pairs in a `dict`:
 
 ```python
+# Multiple API keys passed in a dict
 from gramolang import OpenAIWrapper, Chat
 api_keys = {OpenAIWrapper: 'apikeyvalue'}
 chat = Chat(api_keys=api_keys)
