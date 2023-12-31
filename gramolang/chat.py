@@ -178,8 +178,7 @@ class Chat:
 
     def __init__(
             self,
-            api_keys: dict[type(APIWrapper): str] | None = None,
-            api_key_files: dict[type(APIWrapper): Path] | None = None
+            api_keys: dict[type(APIWrapper): str] | None = None
             ) -> None:
 
         # Logging
@@ -189,8 +188,6 @@ class Chat:
         # APIs Keys and Wrappers
         self._api_keys: dict[type(APIWrapper): str] = (
             {} if api_keys is None else api_keys)
-        self._api_keys_files: dict[type(APIWrapper): str] = (
-            {} if api_key_files is None else api_key_files)
         self._api_wrappers: dict[type(APIWrapper): APIWrapper] = {}
 
         # Current APIWrapper and Model
@@ -254,6 +251,7 @@ class Chat:
         """Set model and instantiate API wrapper (if necessary) or return model."""
 
         if value is None: self._model = None
+
         if value is None or value is NONE_ARG: return self._model
         if value not in self.MODELS:
             raise Exception(
@@ -263,8 +261,7 @@ class Chat:
         api_wrapper_class = MODEL_TO_APIWRAPPER[value]
         if api_wrapper_class not in self._api_wrappers:
             self._api_wrapper = api_wrapper_class(
-                api_key=self._api_keys.get(api_wrapper_class, None),
-                api_key_file=self._api_keys_files.get(api_wrapper_class, None))
+                api_key=self._api_keys.get(api_wrapper_class, None))
             self._api_wrappers[api_wrapper_class] = self._api_wrapper
         self._model = value
         return self._model

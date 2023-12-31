@@ -26,20 +26,16 @@ class APIWrapper:
     API_KEY_NAMES: tuple[str] = ()
     MODELS: set[str] = set()
 
-    def __init__(
-            self,
-            api_key: str | None = None, api_key_file: Path | None = None):
+    def __init__(self, api_key: str | None = None):
         self.logger = module_logger.getChild(self.__class__.__name__)
         self.logger.debug(f"Initializing {self}")
 
         # API Key
         self.api_key_name: str | None = None
         self.api_key: str | None = None
-        self.set_api_key(api_key=api_key, api_key_file=api_key_file)
+        self.set_api_key(api_key=api_key)
 
-    def set_api_key(
-            self,
-            api_key: str | None = None, api_key_file: Path | None = None):
+    def set_api_key(self, api_key: str | None = None):
 
         if api_key is not None:
             self.logger.debug(f"Setting API key directly from value")
@@ -78,10 +74,8 @@ class OpenAIWrapper(APIWrapper):
     RATE_EXCEPTIONS: tuple[Exception] = (RateLimitError,)
     TIMEOUT_EXCEPTIONS: tuple[Exception] = (APITimeoutError,)
 
-    def __init__(
-            self,
-            api_key: str | None = None, api_key_file: Path | None = None):
-        super().__init__(api_key=api_key, api_key_file=api_key_file)
+    def __init__(self, api_key: str | None = None):
+        super().__init__(api_key=api_key)
         self.client = OpenAI(api_key=self.api_key)
 
     def complete_chat(
@@ -138,10 +132,8 @@ class AnthropicWrapper(APIWrapper):
     API_KEY_NAMES: tuple[str] = ('AnthropicWrapper', API_KEY_NAME)
     MODELS = {'claude', 'claude2'}
 
-    def __init__(
-            self,
-            api_key: str | None = None, api_key_file: Path | None = None):
-        super().__init__(api_key=api_key, api_key_file=api_key_file)
+    def __init__(self, api_key: str | None = None):
+        super().__init__(api_key=api_key)
         self.client = OpenAI(api_key=self.api_key)
 
     def complete_chat(self): pass

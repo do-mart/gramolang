@@ -17,62 +17,55 @@ layer of abstraction over the API wrappers.
 
 
 ## API keys
-TODO: update with simplified mechanism
-
 AI organizations' APIs require a key that must be provided before using their
 models or making most calls to their interfaces. A user can provide the key
-value directly, retrieve the key from a file, or from an environment variable.
-Since APIs from different organizations can be used interchangeably, a user can
-provide multiple keys if he intends to use the APIs of multiple organizations.
+value in an environment variable (preferred approach) or directly as an
+argument. Note that multiple keys must be provided when in order to use the
+APIs from different organizations.
 
-### 1. Providing key values directly
-Past API keys as `APIWrapper: 'apikeyvalue'` pairs in a `dict`:
+### 1. Providing a key in the environment
+The preferred approach is to provide the key as an environment variable with
+`os.environ`. The name of the environment variable must be the name of the API
+wrapper class or the organisation's API key name (if existing). The key names are
+stored in the API wrapper class tuple `API_KEY_NAMES`.
 
 ```python
-from gramolang import OpenAIWrapper
-api_keys = {OpenAIWrapper: 'apikeyvalue'}
+# Example of providing an API key in the environment
+import os
+os.environ['OpenAIWrapper'] = 'apikeyvalue'
 ```
 
-### 2. Providing keys in a file
-When using a file, write the key in the form of a `name=apikeyvalue` assignment
-on a single line. Use either the name of the API wrapper class (default), the
-underlying organisation's API key name (if existing) or the key value alone on
-the first non-commented line. A key file can contain keys for different APIs or
-these keys can be stored in different files.
-
-```shell
-# Example of an API key assignment in a file
-OpenAIWrapper=apikeyvalue
-```
-```shell
+```python
 # Using the organisation's API key name works as well
-OPENAI_API_KEY=apikeyvalue
-```
-```shell
-# Or even the key value directly
-apikeyvalue
+import os
+os.environ['OPENAI_API_KEY'] = 'apikeyvalue'
 ```
 
-Pass API key files as `APIWrapper: path` pairs in a `dict` where path is a
-`pathlib.Path` instance pointing to the file:
+
+### 2. Providing a key value directly
+A single value can be provided as an initialization argument to the wrapper
+class for testing or debugging purposes, or to override a default environment key:
 
 ```python
-from pathlib import Path
 from gramolang import OpenAIWrapper
-api_key_files = {OpenAIWrapper: Path('.keys/api-key-file')}
+api_wrapper = OpenAIWrapper(api_key='apikeyvalue')
 ```
 
-### 3. Accessing keys from the environment
-If no key is provided, either directly or with a file, the package will look
-into the process environment with `os.environ`. The name of the environment
-variable must be one of the names used in an api key file.
+Higher-level classes or functions allow providing multiple keys to use different
+organizations API. In that case, pass the keys as `APIWrapper: 'apikeyvalue'`
+pairs in a `dict`:
+
+```python
+from gramolang import OpenAIWrapper, Chat
+api_keys = {OpenAIWrapper: 'apikeyvalue'}
+chat = Chat(api_keys=api_keys)
+```
 
 
 ### Errors or exceptions
 The package will raise an exception if no key value can be retrieved with one
-of the three methods mentioned above. If the methods are used together, and if
-a key is provided in more than one way, the API wrapper will use the first key
-retrieved in the order of presentation above. If a key is retrieved but its
-value is invalid, an exception may not be raised until the first call to the
+of the two methods mentioned above. If a key is provided directly and in the
+environment, the direct value will be used. If a key is retrieved but its value
+is invalid, an exception may not be raised until the first call to the
 underlying API (e.g. when  trying to complete a conversation for the first
 time).
