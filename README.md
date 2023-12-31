@@ -26,8 +26,8 @@ APIs from different organizations.
 ### 1. Providing a key in the environment
 The preferred approach is to provide the key as an environment variable with
 `os.environ`. The name of the environment variable must be the name of the API
-wrapper class or the organisation's API key name (if existing). The key names are
-stored in the API wrapper class tuple `API_KEY_NAMES`.
+wrapper class or the organisation's API key name (if existing). Looked-up names
+are stored in the API wrapper class tuple `API_KEY_NAMES`.
 
 ```python
 # Example of providing an API key in the environment
@@ -43,8 +43,9 @@ os.environ['OPENAI_API_KEY'] = 'apikeyvalue'
 
 
 ### 2. Providing a key value directly
-A single value can be provided as an initialization argument to the wrapper
-class for testing or debugging purposes, or to override a default environment key:
+A key can be also be provided as an initialization argument to the wrapper
+class (e.g. for testing or debugging purposes, or to override a default
+environment key):
 
 ```python
 from gramolang import OpenAIWrapper
