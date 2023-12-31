@@ -8,7 +8,7 @@ from os import environ
 
 # Settings
 API_KEY_NAMES = {'OpenAIWrapper'}
-API_KEY_FILE = Path(__file__).parent / '.keys' / 'openai-api-key-uqam'
+API_KEY_FILE = Path(__file__).parent / '.keys'
 
 
 # Add gramolang package to sys. path
@@ -31,4 +31,3 @@ with open(API_KEY_FILE, 'r') as api_key_file:
 for name, found in found_key.items():
     if not found:
         raise Exception(f"API key '{name}' not in file: {API_KEY_FILE}")
-
