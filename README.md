@@ -70,3 +70,21 @@ environment, the direct value will be used. If a key is retrieved but its value
 is invalid, an exception may not be raised until the first call to the
 underlying API (e.g. when  trying to complete a conversation for the first
 time).
+
+
+
+## Examples
+The `example` directory contains example modules for specific package
+functionalities:
+
+- `models.py`: Simple script to retrieve OpenAI models based on an API key,
+- `console`: Unix shell executable for the interactive console
+- `complete`: Unix shell executable for autocompleting a file using the
+  `auto.complete_file()` function.
+- `watch-pool.py`: Script to watch directory and pool files for autocomplete 
+  using the `auto.watch_pool_files()` function.
+
+
+- `initialize.py` contains a common initialization script for these modules 
+  that add the package directory in `sys.path` and set API keys in the 
+  environment based on values stored in a file.

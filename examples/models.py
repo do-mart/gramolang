@@ -1,4 +1,4 @@
-"""Print OpenAI models based on API key"""
+"""Print OpenAI models based on an API key"""
 
 from logging import getLogger, DEBUG, INFO, basicConfig
 from datetime import datetime
