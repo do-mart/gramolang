@@ -77,12 +77,12 @@ time).
 The `example` directory contains example scripts for specific package
 functionalities:
 
-- `models.py`: Simple script to retrieve OpenAI models based on an API key,
+- `models.py`: Simple script to retrieve OpenAI models based on an API key
 - `console`: Unix shell executable for the interactive console
 - `complete`: Unix shell executable for autocompleting a file using the
-  `auto.complete_file()` function.
+  `auto.complete_file()` function
 - `watch-pool.py`: Script to watch directory and pool files for autocomplete 
-  using the `auto.watch_pool_files()` function.
+  using the `auto.watch_pool_files()` function
 
 The script `initialize.py` provides common initialization features for the
 other scripts: adding the `gramolang` package directory in `sys.path` and load
