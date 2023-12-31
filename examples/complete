@@ -21,12 +21,11 @@ LOG_LEVEL = INFO            # Logging level (must import from logging)
 # Logging
 getLogger('gramolang').setLevel(LOG_LEVEL)
 if LOG_LEVEL is DEBUG:
-    basicConfig(
-        format='%(asctime)s [%(module)s][%(name)s] %(message)s')
+    basicConfig(format='%(asctime)s [%(module)s][%(name)s] %(message)s')
 else:
     basicConfig(format='%(message)s', datefmt='%X')
 
-# Process command line arguments
+# Command line arguments
 if len(argv) == 1:
     print("Missing 1 required argument: file path")
     exit(1)

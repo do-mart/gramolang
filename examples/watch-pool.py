@@ -18,13 +18,13 @@ RETRIES = 4                 # Number of times to retries on timeout or rate limi
 STATUS_DELAY = 60 * 60      # Delay in seconds for printing pool status
 LOG_LEVEL = INFO            # Logging level (import from logging)
 
-POOL_DIR = Path(__file__).parent / Path(__file__).stem
+POOL_DIR = Path(__file__).parent / Path(__file__).stem  # Pool directory
+
 
 # Logging
 getLogger('gramolang').setLevel(LOG_LEVEL)
 if LOG_LEVEL is DEBUG:
-    basicConfig(
-        format='%(asctime)s [%(module)s][%(name)s] %(message)s')
+    basicConfig(format='%(asctime)s [%(module)s][%(name)s] %(message)s')
 else:
     basicConfig(format='%(message)s', datefmt='%X')
 

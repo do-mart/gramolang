@@ -4,8 +4,10 @@
 import initialize
 from gramolang.console import Console
 
+
 # Settings
-MODEL = 'gpt-4'
+MODEL = 'gpt-4'     # Default model
+
 
 # Create and start console
 console = Console()
