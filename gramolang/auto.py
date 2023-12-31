@@ -36,7 +36,6 @@ def validate(file_type: FileType):
 def complete_file(
         path: Path, new_path: Path | str = None,
         api_keys: dict[type(APIWrapper): str] | None = None,
-        api_key_files: dict[type(APIWrapper): Path] | None = None,
         model: str = Chat.MODELS[0],
         timeout: int | None = None, retries: int | None = 0,
         max_chats: int | None = None,
@@ -68,7 +67,7 @@ def complete_file(
         case FileType.EXCEL:
             return complete(
                 workbook_path=path, new_workbook_path=new_path,
-                api_keys=api_keys, api_key_files=api_key_files, model=model,
+                api_keys=api_keys, model=model,
                 timeout=timeout, retries=retries, max_chats=max_chats,
                 file_id=file_id)
 
@@ -98,7 +97,7 @@ def complete_remove_file(
     # Call to complete file
     result = complete_file(
         path=path, new_path=new_path,
-        api_keys=api_keys, api_key_files=api_key_files, model=model,
+        api_keys=api_keys, model=model,
         timeout=timeout, retries=retries, max_chats=max_chats,
         file_id=file_id)
 
@@ -113,7 +112,6 @@ def watch_pool_files(
         root_dir: Path | str,
         in_dir_name: str = 'in', out_dir_name: str = 'out',
         api_keys: dict[type(APIWrapper): str] | None = None,
-        api_key_files: dict[type(APIWrapper): Path] | None = None,
         model: str = Chat.MODELS[0],
         timeout: int | None = None, retries: int | None = 0,
         max_chats: int | None = None, max_files: int | None = None,
@@ -125,7 +123,6 @@ def watch_pool_files(
         in_dir_name: Name of input directory within root_dir
         out_dir_name: Name of output directory within root_dir
         api_keys: See complete_file param.
-        api_key_files: See complete_remove_file param.
         model: See complete_remove_file param.
         timeout: See complete_remove_file param.
         retries: See complete_remove_file param.
@@ -257,7 +254,7 @@ def watch_pool_files(
                     complete_remove_file,
                     path=cache_dir / filename[1], new_path=out_dir / filename[1],
                     file_id=file_id,
-                    api_keys=api_keys, api_key_files=api_key_files,
+                    api_keys=api_keys,
                     model=model, timeout=timeout, retries=retries,
                     max_chats=max_chats)
                 future_names[future] = new_name

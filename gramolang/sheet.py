@@ -58,7 +58,7 @@ def _modify_cell(cell, lock, value, error=False):
 
 
 def _complete_col(
-        name, command_names, col, api_keys, api_key_files, model,
+        name, command_names, col, api_keys, model,
         timeout, retries, lock, call_id):
 
     start = datetime.now()
@@ -66,7 +66,7 @@ def _complete_col(
     logger.info(f"Starting chat completion of {name}")
 
     exceptions = []
-    chat = Chat(api_keys=api_keys, api_key_files=api_key_files)
+    chat = Chat(api_keys=api_keys)
     chat.model(model)
     if timeout is not None: chat.timeout = timeout
     if retries is not None: chat.retries = retries
@@ -116,7 +116,6 @@ def complete(
         workbook_path: Path | str, new_workbook_path: Path | str = None,
         sheet_names: Sequence[str] | None = None,
         api_keys: dict[type(APIWrapper): str] | None = None,
-        api_key_files: dict[type(APIWrapper): Path] | None = None,
         model: str = Chat.MODELS[0],
         timeout: int | None = None, retries: int | None = 0,
         max_chats: int | None = None,
@@ -195,7 +194,7 @@ def complete(
                 logger.info(f"Pooling {name}")
                 future = executor.submit(
                     _complete_col, name=name, command_names=command_names, col=col,
-                    api_keys=api_keys, api_key_files=api_key_files, model=model,
+                    api_keys=api_keys, model=model,
                     timeout=timeout, retries=retries, lock=lock,
                     call_id=call_id)
                 future_completes[future] = name

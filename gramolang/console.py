@@ -117,8 +117,7 @@ class Console:
 
     def __init__(
             self,
-            api_keys: dict[type(APIWrapper): str] | None = None,
-            api_key_files: dict[type(APIWrapper): Path] | None = None
+            api_keys: dict[type(APIWrapper): str] | None = None
             ) -> None:
 
         # Status signal
@@ -126,7 +125,7 @@ class Console:
         self.stop_signal: bool = False
 
         # Create client and chat
-        self.chat: Chat = Chat(api_keys=api_keys, api_key_files=api_key_files)
+        self.chat: Chat = Chat(api_keys=api_keys)
 
         # States variables (see default here)
         self._infos: bool = False   # Write more information about responses
