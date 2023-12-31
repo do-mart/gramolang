@@ -49,7 +49,7 @@ def _modify_cell(cell, lock, value, error=False):
             # at high temperature setting). This handler ensures that the error
             # message will be printed in the cell without raising another
             # exception. The original output should raise an exception and won't
-            # be printed in the cell, only the formated error message.
+            # be printed in the cell, only the formatted error message.
             cell.value = ILLEGAL_CHARACTERS_RE.sub(r'', value)
         else:
             raise e

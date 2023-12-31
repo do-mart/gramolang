@@ -1,16 +1,11 @@
 """Print OpenAI models based on an API key"""
 
-from logging import getLogger, DEBUG, INFO, basicConfig
 from datetime import datetime
 from tabulate import tabulate
 
 import initialize
 from gramolang import OpenAIWrapper
 
-
-# Logging
-getLogger('gramolang.wraipi').setLevel(INFO)
-basicConfig(format='%(asctime)s [%(module)s][%(name)s] %(message)s')
 
 api_wrapper = OpenAIWrapper()
 
