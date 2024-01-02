@@ -10,6 +10,7 @@ from typing import Any, Sequence
 from logging import getLogger
 from pathlib import Path
 from os import environ
+from datetime import datetime
 
 from openai import OpenAI, RateLimitError, APITimeoutError
 
@@ -35,6 +36,12 @@ class APIWrapper:
         self.api_key: str | None = None
         self.set_api_key(api_key=api_key)
 
+        # Client
+        self._client = None
+
+        # Models
+        self._all_models: dict[str: dict] | None = None
+
     def set_api_key(self, api_key: str | None = None):
 
         if api_key is not None:
@@ -55,10 +62,19 @@ class APIWrapper:
                 f"Missing API key: no value or key file provided, and "
                 f"no environment variable {' or '.join(self.API_KEY_NAMES)}.")
 
+    @property
+    def client(self): return self._client
+
+    def _load_all_models(self): pass
+
+    def all_models(self) -> dict[str: dict] | None:
+        if self._all_models is None: self._load_all_models()
+        return self._all_models
+
+
 # TODO: integrate a model function directly in the API?
 # TODO: Test the MODELS constant against the available models at runtime?
 #       (The same list should be re-used)
-
 
 class OpenAIWrapper(APIWrapper):
     """Open AI's API wrapper"""
@@ -76,7 +92,14 @@ class OpenAIWrapper(APIWrapper):
 
     def __init__(self, api_key: str | None = None):
         super().__init__(api_key=api_key)
-        self.client = OpenAI(api_key=self.api_key)
+        self._client = OpenAI(api_key=self.api_key)
+
+    def _load_all_models(self):
+        self._all_models = {
+            m.id: {
+                'created': datetime.fromtimestamp(m.created),
+                'owned_by': m.owned_by}
+            for m in self._client.models.list().data}
 
     def complete_chat(
             self, model: str, messages: list[Message],
@@ -119,7 +142,7 @@ class OpenAIWrapper(APIWrapper):
             backoff=backoff, backoff_base=backoff_base,
             call_id=call_id, log_messages=(log_message,))
         def retry_create_chat_completion():
-            return self.client.with_options(**options).chat.completions.create(**request)
+            return self._client.with_options(**options).chat.completions.create(**request)
 
         # Return request and response:
         return request, retry_create_chat_completion()

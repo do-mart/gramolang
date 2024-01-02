@@ -1,6 +1,7 @@
+**/.keys
+**/dummy
 .idea/
 archive/
 examples/.keys
 examples/watch-pool/
 notes/
-.keys
