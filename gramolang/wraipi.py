@@ -39,9 +39,6 @@ class APIWrapper:
         # Client
         self._client = None
 
-        # Models
-        self._all_models: dict[str: dict] | None = None
-
     def set_api_key(self, api_key: str | None = None):
 
         if api_key is not None:
@@ -65,16 +62,8 @@ class APIWrapper:
     @property
     def client(self): return self._client
 
-    def _load_all_models(self): pass
+    def all_models(self) -> dict[str: dict] | None: pass
 
-    def all_models(self) -> dict[str: dict] | None:
-        if self._all_models is None: self._load_all_models()
-        return self._all_models
-
-
-# TODO: integrate a model function directly in the API?
-# TODO: Test the MODELS constant against the available models at runtime?
-#       (The same list should be re-used)
 
 class OpenAIWrapper(APIWrapper):
     """Open AI's API wrapper"""
@@ -94,8 +83,8 @@ class OpenAIWrapper(APIWrapper):
         super().__init__(api_key=api_key)
         self._client = OpenAI(api_key=self.api_key)
 
-    def _load_all_models(self):
-        self._all_models = {
+    def all_models(self) -> dict[str: dict] | None:
+        return {
             m.id: {
                 'created': datetime.fromtimestamp(m.created),
                 'owned_by': m.owned_by}
