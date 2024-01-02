@@ -14,7 +14,7 @@ from datetime import datetime
 
 from openai import OpenAI, RateLimitError, APITimeoutError
 
-from .common import Message, retry
+from .common import Model, Message, retry
 
 # Logging
 module_logger = getLogger(__name__)
@@ -85,9 +85,7 @@ class OpenAIWrapper(APIWrapper):
 
     def all_models(self) -> dict[str: dict] | None:
         return {
-            m.id: {
-                'created': datetime.fromtimestamp(m.created),
-                'owned_by': m.owned_by}
+            m.id: Model(m.id, datetime.fromtimestamp(m.created), m.owned_by)
             for m in self._client.models.list().data}
 
     def complete_chat(

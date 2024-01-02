@@ -55,6 +55,13 @@ class Message(NamedTuple):
     content: str
 
 
+class Model(NamedTuple):
+    """Properties/parameters on a model"""
+    id: str
+    created: datetime | None
+    owned_by: str | None
+
+
 # Files types
 # -----------
 
